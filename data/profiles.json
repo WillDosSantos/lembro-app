@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1746114035031",
+    "name": "Amaury dos Santos",
+    "birth": "2023-08-31",
+    "death": "2013-06-02",
+    "eulogy": "gasdjjasdfj",
+    "story": "askjkasdfkasdfk",
+    "cause": "asdfasdfasdfasdf",
+    "family": [
+      {
+        "first": "John",
+        "last": "SMith"
+      },
+      {
+        "first": "Adam",
+        "last": "Smith"
+      }
+    ],
+    "photo": "1746114035030-dad-21.JPG",
+    "slug": "amaury-dossantos",
+    "comments": [
+      {
+        "id": "3ba7f084-29dc-4691-acc4-ccad4375c7c1",
+        "message": "This is a comment",
+        "author": "willdossantosdesigns@gmail.com",
+        "createdAt": "2025-05-15T22:23:25.101Z",
+        "approved": false
+      }
+    ]
+  }
+]

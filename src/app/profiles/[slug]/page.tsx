@@ -28,8 +28,6 @@ interface Profile {
   createdBy?: string;
 }
 
-
-
 function formatDate(dateStr: string | undefined) {
   if (!dateStr) return "";
   const date = new Date(dateStr);
@@ -43,12 +41,15 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   return profiles.find((p) => p.slug === slug) || null;
 }
 
-export default async function ProfilePage({
-  params,
-}: {
+
+interface PageProps {
   params: { slug: string };
-}) {
+}
+
+export default async function ProfilePage({ params }: { params: { slug: string } }) {
   const profile = await getProfileBySlug(params.slug);
+  if (!profile) return notFound();
+
 
   if (!profile) return notFound();
 
@@ -96,6 +97,30 @@ export default async function ProfilePage({
           <p className="whitespace-pre-line">{profile.story}</p>
         </div>
       )}
+      {profile.lifePhotos?.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Life in Photos</h2>
+
+          <div className="space-y-6 border-l-2 border-gray-300 pl-4">
+            {profile.lifePhotos.map((photo: any, index: number) => (
+              <div key={index} className="relative pl-4">
+                <div className="absolute -left-[9px] top-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+                <img
+                  src={`/uploads/${photo.filename}`}
+                  alt={`Life photo ${index + 1}`}
+                  className="w-full max-w-xl rounded shadow-md"
+                />
+                {photo.description && (
+                  <p className="mt-2 text-gray-700 text-sm">
+                    {photo.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {profile.family && profile.family.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold">Family Members</h2>
@@ -108,12 +133,12 @@ export default async function ProfilePage({
           </ul>
         </div>
       )}
-     <CommentForm slug={profile.slug} />
-<CommentSection
-  comments={profile.comments || []}
-  profileSlug={profile.slug}
-  createdBy={profile.createdBy || ''}
-/>
+      <CommentForm slug={profile.slug} />
+      <CommentSection
+        comments={profile.comments || []}
+        profileSlug={profile.slug}
+        createdBy={profile.createdBy || ""}
+      />
     </div>
   );
 }

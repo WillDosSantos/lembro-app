@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface FamilyMember {
   first: string;
@@ -33,9 +33,34 @@ export default function CreateProfilePage() {
     cause: "",
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [family, setFamily] = useState<FamilyMember[]>([{ first: "", last: "" }]);
-  const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [family, setFamily] = useState<FamilyMember[]>([
+    { first: "", last: "" },
+  ]);
+  const [formStatus, setFormStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [lifePhotos, setLifePhotos] = useState<
+    { file: File | null; description: string }[]
+  >([{ file: null, description: "" }]);
+
+  const addLifePhoto = () => {
+    if (lifePhotos.length >= 10) return;
+    setLifePhotos([...lifePhotos, { file: null, description: "" }]);
+  };
+
+  const handleLifePhotoChange = (index: number, file: File | null) => {
+    const updated = [...lifePhotos];
+    updated[index].file = file;
+    setLifePhotos(updated);
+  };
+
+  const handleLifeDescriptionChange = (index: number, desc: string) => {
+    const updated = [...lifePhotos];
+    updated[index].description = desc;
+    setLifePhotos(updated);
+  };
 
   // Redirect if not logged in
   useEffect(() => {
@@ -47,18 +72,26 @@ export default function CreateProfilePage() {
   if (status === "loading") {
     return (
       <div className="p-8 text-center">
-        <p className="text-lg text-gray-600 animate-pulse">Checking authentication…</p>
+        <p className="text-lg text-gray-600 animate-pulse">
+          Checking authentication…
+        </p>
       </div>
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     // Clear error message when user starts typing
     if (errorMessage) setErrorMessage("");
   };
 
-  const handleFamilyChange = (index: number, field: keyof FamilyMember, value: string) => {
+  const handleFamilyChange = (
+    index: number,
+    field: keyof FamilyMember,
+    value: string
+  ) => {
     const updated = [...family];
     updated[index] = { ...updated[index], [field]: value };
     setFamily(updated);
@@ -82,7 +115,9 @@ export default function CreateProfilePage() {
       return false;
     }
     if (!/^[a-z0-9-]+$/.test(form.slug)) {
-      setErrorMessage("URL slug can only contain lowercase letters, numbers, and hyphens");
+      setErrorMessage(
+        "URL slug can only contain lowercase letters, numbers, and hyphens"
+      );
       return false;
     }
     return true;
@@ -90,44 +125,61 @@ export default function CreateProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+  
     if (!validateForm()) {
       return;
     }
-
+  
     setFormStatus("loading");
     setErrorMessage("");
-
+  
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (photoFile) formData.append("photo", photoFile);
     formData.append("family", JSON.stringify(family));
-
+  
+    // 👇 Add life photo metadata and files BEFORE fetch
+    formData.append(
+      "lifePhotos",
+      JSON.stringify(lifePhotos.map((photo, i) => ({
+        filename: photo.file.name,
+        description: photo.description,
+      })))
+    );
+  
+    lifePhotos.forEach((photo, i) => {
+      formData.append(`lifePhoto_${i}`, photo.file);
+    });
+  
     // Add createdBy if user is logged in
     if (session?.user?.email) {
       formData.append("createdBy", session.user.email);
     }
-
+  
     try {
       const res = await fetch("/api/profiles", {
         method: "POST",
         body: formData,
       });
-
+  
       if (!res.ok) {
-        const error = await res.json().catch(() => ({ message: "Something went wrong" }));
+        const error = await res
+          .json()
+          .catch(() => ({ message: "Something went wrong" }));
         throw new Error(error.message || "Failed to create memorial");
       }
-
+  
       const data = await res.json();
       setFormStatus("success");
-      // Redirect to the new memorial page after a short delay
+  
       setTimeout(() => {
         router.push(`/profiles/${data.slug}`);
       }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
-      setErrorMessage(error instanceof Error ? error.message : "Something went wrong");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
       setFormStatus("error");
     }
   };
@@ -171,7 +223,7 @@ export default function CreateProfilePage() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Create a Memorial</h1>
-      
+
       {errorMessage && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {errorMessage}
@@ -180,7 +232,10 @@ export default function CreateProfilePage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="slug"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Custom URL
           </label>
           <input
@@ -197,7 +252,10 @@ export default function CreateProfilePage() {
         </div>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Full Name
           </label>
           <input
@@ -212,7 +270,10 @@ export default function CreateProfilePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="birth" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="birth"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Birth Date
             </label>
             <input
@@ -224,7 +285,10 @@ export default function CreateProfilePage() {
             />
           </div>
           <div>
-            <label htmlFor="death" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="death"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Death Date
             </label>
             <input
@@ -238,7 +302,10 @@ export default function CreateProfilePage() {
         </div>
 
         <div>
-          <label htmlFor="eulogy" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="eulogy"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Eulogy
           </label>
           <textarea
@@ -252,7 +319,10 @@ export default function CreateProfilePage() {
         </div>
 
         <div>
-          <label htmlFor="story" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="story"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Life Story
           </label>
           <textarea
@@ -263,10 +333,44 @@ export default function CreateProfilePage() {
             className="w-full border p-2 rounded"
             onChange={handleChange}
           />
+          <div>
+            <h2 className="font-semibold mt-4">Life Story Photos</h2>
+            {lifePhotos.map((item, index) => (
+              <div key={index} className="space-y-2 mt-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    handleLifePhotoChange(index, e.target.files?.[0] || null)
+                  }
+                />
+                <textarea
+                  placeholder="Photo description"
+                  className="w-full border p-2"
+                  value={item.description}
+                  onChange={(e) =>
+                    handleLifeDescriptionChange(index, e.target.value)
+                  }
+                />
+              </div>
+            ))}
+            {lifePhotos.length < 10 && (
+              <button
+                type="button"
+                onClick={addLifePhoto}
+                className="text-sm text-blue-600 mt-2"
+              >
+                + Add Another Photo
+              </button>
+            )}
+          </div>
         </div>
 
         <div>
-          <label htmlFor="cause" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="cause"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Cause of Death
           </label>
           <input
@@ -279,7 +383,10 @@ export default function CreateProfilePage() {
         </div>
 
         <div>
-          <label htmlFor="photo" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="photo"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Photo
           </label>
           <input
@@ -290,7 +397,8 @@ export default function CreateProfilePage() {
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
-                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                if (file.size > 5 * 1024 * 1024) {
+                  // 5MB limit
                   setErrorMessage("Photo must be less than 5MB");
                   return;
                 }
@@ -316,7 +424,7 @@ export default function CreateProfilePage() {
               + Add Family Member
             </button>
           </div>
-          
+
           {family.map((member, index) => (
             <div key={index} className="flex gap-2 mt-2">
               <input

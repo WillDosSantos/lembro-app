@@ -96,6 +96,7 @@ export async function POST(req: Request) {
       createdBy,
       comments: [],
       lifePhotos: uploadedLifePhotos,
+      candles: 0,
     };
 
     console.log("Saving profile with photos:", {

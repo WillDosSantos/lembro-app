@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import CommentSection from "@/components/CommentsSection";
 import CommentForm from "@/components/CommentForm";
+import CandleButton from "@/components/CandleButton";
+
 
 interface Comment {
   id: string;
@@ -41,15 +43,40 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   return profiles.find((p) => p.slug === slug) || null;
 }
 
+const causeDonationMap: Record<string, { label: string; url: string }> = {
+  parkinsons: {
+    label: "Donate to Parkinson's Foundation",
+    url: "https://www.parkinson.org/ways-to-give",
+  },
+  "traffic accident due to drunk driving": {
+    label: "Support MADD",
+    url: "https://madd.org/donate",
+  },
+  cancer: {
+    label: "Donate to American Cancer Society",
+    url: "https://www.cancer.org/donate.html",
+  },
+  "heart disease": {
+    label: "Donate to American Heart Association",
+    url: "https://www.heart.org/en/get-involved/ways-to-give",
+  },
+  alzheimers: {
+    label: "Donate to Alzheimer's Association",
+    url: "https://www.alz.org/get-involved-now/donate",
+  },
+};
 
 interface PageProps {
   params: { slug: string };
 }
 
-export default async function ProfilePage({ params }: { params: { slug: string } }) {
+export default async function ProfilePage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const profile = await getProfileBySlug(params.slug);
   if (!profile) return notFound();
-
 
   if (!profile) return notFound();
 
@@ -66,6 +93,7 @@ export default async function ProfilePage({ params }: { params: { slug: string }
           className="w-full max-w-md object-cover rounded"
         />
       )}
+      <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
       {(profile.birth || profile.death) && (
         <p className="text-gray-600">
           {profile.birth && (
@@ -81,9 +109,21 @@ export default async function ProfilePage({ params }: { params: { slug: string }
         </p>
       )}
       {profile.cause && (
-        <p>
-          <strong>Cause of Death:</strong> {profile.cause}
-        </p>
+        <div className="space-y-2">
+          <p>
+            <strong>Cause of Death:</strong> {profile.cause}
+          </p>
+          {causeDonationMap[profile.cause.toLowerCase()] && (
+            <a
+              href={causeDonationMap[profile.cause.toLowerCase()].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              {causeDonationMap[profile.cause.toLowerCase()].label}
+            </a>
+          )}
+        </div>
       )}
       {profile.eulogy && (
         <div>

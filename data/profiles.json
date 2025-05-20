@@ -34,7 +34,8 @@
         "createdAt": "2025-05-15T23:30:01.489Z",
         "approved": false
       }
-    ]
+    ],
+    "candles": 1
   },
   {
     "id": "1747426161549",
@@ -167,6 +168,7 @@
         "filename": "1747686128620-dad-6.png",
         "description": ""
       }
-    ]
+    ],
+    "candles": 6
   }
 ]

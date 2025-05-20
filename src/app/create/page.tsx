@@ -125,53 +125,55 @@ export default function CreateProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (!validateForm()) {
       return;
     }
-  
+
     setFormStatus("loading");
     setErrorMessage("");
-  
+
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (photoFile) formData.append("photo", photoFile);
     formData.append("family", JSON.stringify(family));
-  
+
     // 👇 Add life photo metadata and files BEFORE fetch
     formData.append(
       "lifePhotos",
-      JSON.stringify(lifePhotos.map((photo, i) => ({
-        filename: photo.file.name,
-        description: photo.description,
-      })))
+      JSON.stringify(
+        lifePhotos.map((photo, i) => ({
+          filename: photo.file.name,
+          description: photo.description,
+        }))
+      )
     );
-  
+
     lifePhotos.forEach((photo, i) => {
       formData.append(`lifePhoto_${i}`, photo.file);
     });
-  
+
     // Add createdBy if user is logged in
     if (session?.user?.email) {
       formData.append("createdBy", session.user.email);
     }
-  
+
     try {
       const res = await fetch("/api/profiles", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!res.ok) {
         const error = await res
           .json()
           .catch(() => ({ message: "Something went wrong" }));
         throw new Error(error.message || "Failed to create memorial");
       }
-  
+
       const data = await res.json();
       setFormStatus("success");
-  
+
       setTimeout(() => {
         router.push(`/profiles/${data.slug}`);
       }, 2000);
@@ -222,8 +224,8 @@ export default function CreateProfilePage() {
   // Form View
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Create a Memorial</h1>
-
+      <h1 className="text-2xl font-bold mb-6">Who do you want to remember?</h1>
+      <p>Tell us about the person that you want to remember.</p>
       {errorMessage && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {errorMessage}
@@ -231,6 +233,54 @@ export default function CreateProfilePage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Full Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            className="w-full border p-2 rounded"
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="birth"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Birth Date
+            </label>
+            <input
+              id="birth"
+              name="birth"
+              type="date"
+              className="w-full border p-2 rounded"
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="death"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Death Date
+            </label>
+            <input
+              id="death"
+              name="death"
+              type="date"
+              className="w-full border p-2 rounded"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
         <div>
           <label
             htmlFor="slug"
@@ -249,23 +299,6 @@ export default function CreateProfilePage() {
           <p className="text-xs text-gray-500 mt-1">
             Use only lowercase letters, numbers, and hyphens
           </p>
-        </div>
-
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Full Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            placeholder="Full Name"
-            className="w-full border p-2 rounded"
-            onChange={handleChange}
-            required
-          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">

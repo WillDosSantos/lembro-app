@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import CommentSection from "@/components/CommentsSection";
 import CommentForm from "@/components/CommentForm";
+import CandleButton from "@/components/CandleButton";
+
 
 interface Comment {
   id: string;
@@ -28,8 +30,6 @@ interface Profile {
   createdBy?: string;
 }
 
-
-
 function formatDate(dateStr: string | undefined) {
   if (!dateStr) return "";
   const date = new Date(dateStr);
@@ -43,12 +43,40 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   return profiles.find((p) => p.slug === slug) || null;
 }
 
+const causeDonationMap: Record<string, { label: string; url: string }> = {
+  parkinsons: {
+    label: "Donate to Parkinson's Foundation",
+    url: "https://www.parkinson.org/ways-to-give",
+  },
+  "traffic accident due to drunk driving": {
+    label: "Support MADD",
+    url: "https://madd.org/donate",
+  },
+  cancer: {
+    label: "Donate to American Cancer Society",
+    url: "https://www.cancer.org/donate.html",
+  },
+  "heart disease": {
+    label: "Donate to American Heart Association",
+    url: "https://www.heart.org/en/get-involved/ways-to-give",
+  },
+  alzheimers: {
+    label: "Donate to Alzheimer's Association",
+    url: "https://www.alz.org/get-involved-now/donate",
+  },
+};
+
+interface PageProps {
+  params: { slug: string };
+}
+
 export default async function ProfilePage({
   params,
 }: {
   params: { slug: string };
 }) {
   const profile = await getProfileBySlug(params.slug);
+  if (!profile) return notFound();
 
   if (!profile) return notFound();
 
@@ -65,6 +93,7 @@ export default async function ProfilePage({
           className="w-full max-w-md object-cover rounded"
         />
       )}
+      <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
       {(profile.birth || profile.death) && (
         <p className="text-gray-600">
           {profile.birth && (
@@ -80,9 +109,21 @@ export default async function ProfilePage({
         </p>
       )}
       {profile.cause && (
-        <p>
-          <strong>Cause of Death:</strong> {profile.cause}
-        </p>
+        <div className="space-y-2">
+          <p>
+            <strong>Cause of Death:</strong> {profile.cause}
+          </p>
+          {causeDonationMap[profile.cause.toLowerCase()] && (
+            <a
+              href={causeDonationMap[profile.cause.toLowerCase()].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              {causeDonationMap[profile.cause.toLowerCase()].label}
+            </a>
+          )}
+        </div>
       )}
       {profile.eulogy && (
         <div>
@@ -96,6 +137,30 @@ export default async function ProfilePage({
           <p className="whitespace-pre-line">{profile.story}</p>
         </div>
       )}
+      {profile.lifePhotos?.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">Life in Photos</h2>
+
+          <div className="space-y-6 border-l-2 border-gray-300 pl-4">
+            {profile.lifePhotos.map((photo: any, index: number) => (
+              <div key={index} className="relative pl-4">
+                <div className="absolute -left-[9px] top-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+                <img
+                  src={`/uploads/${photo.filename}`}
+                  alt={`Life photo ${index + 1}`}
+                  className="w-full max-w-xl rounded shadow-md"
+                />
+                {photo.description && (
+                  <p className="mt-2 text-gray-700 text-sm">
+                    {photo.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {profile.family && profile.family.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold">Family Members</h2>
@@ -108,12 +173,12 @@ export default async function ProfilePage({
           </ul>
         </div>
       )}
-     <CommentForm slug={profile.slug} />
-<CommentSection
-  comments={profile.comments || []}
-  profileSlug={profile.slug}
-  createdBy={profile.createdBy || ''}
-/>
+      <CommentForm slug={profile.slug} />
+      <CommentSection
+        comments={profile.comments || []}
+        profileSlug={profile.slug}
+        createdBy={profile.createdBy || ""}
+      />
     </div>
   );
 }

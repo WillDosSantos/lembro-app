@@ -35,7 +35,7 @@
         "approved": false
       }
     ],
-    "candles": 1
+    "candles": 4
   },
   {
     "id": "1747426161549",
@@ -59,7 +59,8 @@
     "photo": "1747426161547-dad-2.JPG",
     "createdBy": "willdossantosdesigns@gmail.com",
     "comments": [],
-    "lifePhotos": []
+    "lifePhotos": [],
+    "candles": 2
   },
   {
     "id": "1747520181620",
@@ -143,7 +144,7 @@
   },
   {
     "id": "1747686128620",
-    "name": "Alex Smith",
+    "name": "Alex Smith 2",
     "slug": "alex-smtih",
     "birth": "1987-02-02",
     "death": "2024-02-05",
@@ -156,19 +157,19 @@
         "last": ""
       }
     ],
-    "photo": "1747686128617-dad-concept.png",
+    "photo": "9x16_A_man_standing_in_a_wheat_field_.png",
     "createdBy": "willdossantosdesigns@gmail.com",
     "comments": [],
     "lifePhotos": [
       {
-        "filename": "1747686128619-anon-exmaple-2.png",
+        "filename": "740-volvo-concept.png",
         "description": "asdfasdfasdf"
       },
       {
-        "filename": "1747686128620-dad-6.png",
+        "filename": "Untitled_Artwork.jpg",
         "description": ""
       }
     ],
-    "candles": 6
+    "candles": 10
   }
 ]

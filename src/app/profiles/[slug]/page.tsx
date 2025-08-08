@@ -5,7 +5,8 @@ import Link from "next/link";
 import CommentSection from "@/components/CommentsSection";
 import CommentForm from "@/components/CommentForm";
 import CandleButton from "@/components/CandleButton";
-
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 interface Comment {
   id: string;
@@ -78,13 +79,23 @@ export default async function ProfilePage({
   const profile = await getProfileBySlug(params.slug);
   if (!profile) return notFound();
 
-  if (!profile) return notFound();
+  const session = await getServerSession(authOptions);
+  const isOwner = session?.user?.email === profile.createdBy;
 
   return (
     <div className="p-8 max-w-2xl mx-auto space-y-6">
       <Link href="/" className="text-sm text-blue-600 hover:underline">
         ← Back to Home
       </Link>
+      {isOwner && (
+        <Link
+          href={`/profiles/${profile.slug}/edit`}
+          className="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+        >
+          Edit Profile
+        </Link>
+      )}
+
       <h1 className="text-3xl font-bold">{profile.name}</h1>
       {profile.photo && (
         <img

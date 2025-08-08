@@ -123,26 +123,6 @@
     "lifePhotos": []
   },
   {
-    "id": "1747680762432",
-    "name": "John Smith",
-    "slug": "john-smith",
-    "birth": "1940-01-20",
-    "death": "2024-01-30",
-    "eulogy": "asdfasd",
-    "story": "asdfasdf",
-    "cause": "asdfasdfasdfasdf",
-    "family": [
-      {
-        "first": "",
-        "last": ""
-      }
-    ],
-    "photo": "1747680762431-aaron-pfp.png",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": []
-  },
-  {
     "id": "1747686128620",
     "name": "Alex Smith 2",
     "slug": "alex-smtih",
@@ -170,6 +150,6 @@
         "description": ""
       }
     ],
-    "candles": 10
+    "candles": 11
   }
 ]

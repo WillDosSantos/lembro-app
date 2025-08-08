@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
+interface Params {
+  slug: string;
+}
 
 interface FamilyMember {
   first: string;
@@ -26,8 +30,8 @@ interface FormData {
   photo: string;
 }
 
-export default function EditProfile({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function EditProfile() {
+  const { slug } = useParams() as Params;
   const { data: session } = useSession();
   const router = useRouter();
   const [form, setForm] = useState<FormData>({
@@ -108,6 +112,23 @@ export default function EditProfile({ params }: { params: { slug: string } }) {
     });
     if (res.ok) {
       router.push(`/profiles/${slug}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this profile? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    const res = await fetch(`/api/profiles/${slug}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      router.push("/"); // or /explore, or dashboard
+    } else {
+      alert("Failed to delete profile.");
     }
   };
 
@@ -312,6 +333,12 @@ export default function EditProfile({ params }: { params: { slug: string } }) {
         className="bg-green-600 text-white px-4 py-2 rounded"
       >
         Save Changes
+      </button>
+      <button
+        onClick={handleDelete}
+        className="mt-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      >
+        Delete This Profile
       </button>
     </form>
   );

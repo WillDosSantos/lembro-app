@@ -48,3 +48,22 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
   await fs.writeFile(filePath, JSON.stringify(profiles, null, 2));
   return NextResponse.json(profiles[index]);
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { slug: string } }
+) {
+  const { slug } = params;
+
+  const data = await fs.readFile(filePath, "utf-8");
+  const profiles = JSON.parse(data);
+
+  const updated = profiles.filter((p: any) => p.slug !== slug);
+  if (updated.length === profiles.length) {
+    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+  }
+
+  await fs.writeFile(filePath, JSON.stringify(updated, null, 2));
+
+  return NextResponse.json({ message: "Profile deleted." });
+}

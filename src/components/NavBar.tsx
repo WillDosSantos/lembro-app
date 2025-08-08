@@ -9,6 +9,7 @@ export default function NavBar() {
   return (
     <nav className="w-full bg-gray-100 px-6 py-4 flex justify-between items-center shadow-sm">
       <Link href="/" className="text-lg font-semibold text-gray-800">Lembro</Link>
+      <Link href="/explore" className="text-gray-600 hover:text-black">Explore</Link>
 
       <div className="space-x-4">
         {session ? (

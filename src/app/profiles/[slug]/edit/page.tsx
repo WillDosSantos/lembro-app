@@ -34,6 +34,7 @@ export default function EditProfile() {
   const { slug } = useParams() as Params;
   const { data: session } = useSession();
   const router = useRouter();
+  const [deleted, setDeleted] = useState(false);
   const [form, setForm] = useState<FormData>({
     name: "",
     birth: "",
@@ -47,9 +48,14 @@ export default function EditProfile() {
   });
 
   useEffect(() => {
+    if (!session || deleted) return;
+  
     async function fetchData() {
       const res = await fetch(`/api/profiles/${slug}`);
+      if (!res.ok) return; // stops 404 crash
+  
       const data = await res.json();
+  
       if (data.createdBy !== session?.user?.email) {
         router.push(`/profiles/${slug}`);
       } else {
@@ -60,20 +66,19 @@ export default function EditProfile() {
           eulogy: data.eulogy || "",
           story: data.story || "",
           cause: data.cause || "",
-          photo: data.photo || "", // ✅ include photo from the profile
+          photo: data.photo || "",
           family: data.family || [{ first: "", last: "" }],
-          lifePhotos: data.lifePhotos?.map((p: LifePhoto) => ({
-            ...p,
-            previewUrl: p.filename ? `/uploads/${p.filename}` : "",
-          })) || [{ filename: "", description: "", previewUrl: "" }],
+          lifePhotos:
+            data.lifePhotos?.map((p: LifePhoto) => ({
+              ...p,
+              previewUrl: p.filename ? `/uploads/${p.filename}` : "",
+            })) || [{ filename: "", description: "", previewUrl: "" }],
         });
       }
     }
-
-    if (session) {
-      fetchData();
-    }
-  }, [slug, session]);
+  
+    fetchData();
+  }, [slug, session, deleted]);
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -115,18 +120,21 @@ export default function EditProfile() {
     }
   };
 
+  
+
   const handleDelete = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this profile? This action cannot be undone."
     );
     if (!confirmed) return;
-
+  
     const res = await fetch(`/api/profiles/${slug}`, {
       method: "DELETE",
     });
-
+  
     if (res.ok) {
-      router.push("/"); // or /explore, or dashboard
+      setDeleted(true);
+      router.push("/deleted");
     } else {
       alert("Failed to delete profile.");
     }

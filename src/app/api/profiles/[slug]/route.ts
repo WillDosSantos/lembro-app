@@ -1,69 +1,63 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { promises as fs } from "fs";
+import { NextResponse } from "next/server";
+import { readFile, writeFile } from "fs/promises";
 import path from "path";
 
 const filePath = path.join(process.cwd(), "data", "profiles.json");
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
-  const data = await fs.readFile(filePath, "utf-8").catch(() => "[]");
-  const profiles = JSON.parse(data);
-  const profile = profiles.find((p: any) => p.slug === params.slug);
-
-  if (!profile) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+async function readProfiles() {
+  const raw = await readFile(filePath, "utf8").catch(() => "[]");
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
   }
+}
 
+async function writeProfiles(list: any[]) {
+  await writeFile(filePath, JSON.stringify(list, null, 2), "utf8");
+}
+
+// GET /api/profiles/[slug]
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+  const profiles = await readProfiles();
+  const profile = profiles.find((p: any) => p.slug === slug);
+  if (!profile) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(profile);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+// PUT /api/profiles/[slug]
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
   const body = await req.json();
-  const data = await fs.readFile(filePath, "utf-8").catch(() => "[]");
-  const profiles = JSON.parse(data);
-  const index = profiles.findIndex((p: any) => p.slug === params.slug);
 
-  if (index === -1) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-  }
+  const profiles = await readProfiles();
+  const index = profiles.findIndex((p: any) => p.slug === slug);
+  if (index === -1) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
-  const existing = profiles[index];
-  if (existing.createdBy !== session.user.email) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  profiles[index] = {
-    ...existing,
-    ...body,
-    family: body.family || [],
-    lifePhotos: body.lifePhotos || [],
-  };
-
-  await fs.writeFile(filePath, JSON.stringify(profiles, null, 2));
-  return NextResponse.json(profiles[index]);
+  profiles[index] = { ...profiles[index], ...body };
+  await writeProfiles(profiles);
+  return NextResponse.json({ ok: true });
 }
 
+// DELETE /api/profiles/[slug]
 export async function DELETE(
-  req: Request,
-  { params }: { params: { slug: string } }
+  _req: Request,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = params;
+  const { slug } = await params;
 
-  const data = await fs.readFile(filePath, "utf-8");
-  const profiles = JSON.parse(data);
+  const profiles = await readProfiles();
+  const next = profiles.filter((p: any) => p.slug !== slug);
+  if (next.length === profiles.length)
+    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
-  const updated = profiles.filter((p: any) => p.slug !== slug);
-  if (updated.length === profiles.length) {
-    return NextResponse.json({ error: "Profile not found." }, { status: 404 });
-  }
-
-  await fs.writeFile(filePath, JSON.stringify(updated, null, 2));
-
-  return NextResponse.json({ message: "Profile deleted." });
+  await writeProfiles(next);
+  return NextResponse.json({ message: "Deleted" });
 }

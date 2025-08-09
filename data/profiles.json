@@ -44,7 +44,7 @@
     "birth": "1952-05-03",
     "death": "2025-04-20",
     "eulogy": "Father, Husband, and Dreamer",
-    "story": "Lorem ipsum dolor sit amet consectetur. Eu nec orci mauris et porttitor tortor ut aliquet vulputate. Mauris felis sed sed egestas amet. Ipsum nibh aenean venenatis aliquet quam convallis facilisis eget. Auctor est nibh id scelerisque auctor amet lorem. Lorem ipsum dolor sit amet consectetur. Eu nec orci mauris et porttitor tortor ut aliquet vulputate. Mauris felis sed sed egestas amet. Ipsum nibh aenean venenatis aliquet quam convallis facilisis eget. Auctor est nibh id scelerisque auctor amet lorem. Lorem ipsum dolor sit amet consectetur. Eu nec orci mauris et porttitor tortor ut aliquet vulputate. Mauris felis sed sed egestas amet. Ipsum nibh aenean venenatis aliquet quam convallis facilisis eget. Auctor est nibh id scelerisque auctor amet lorem. Lorem ipsum dolor sit amet consectetur. Eu nec orci mauris et porttitor tortor ut aliquet vulputate. Mauris felis sed sed egestas amet. Ipsum nibh aenean venenatis aliquet quam convallis facilisis eget. Auctor est nibh id scelerisque auctor amet lorem.",
+    "story": "Lorem ipsum dolor sit amet consectetur...",
     "cause": "Parkinsons",
     "family": [
       {
@@ -61,86 +61,6 @@
     "comments": [],
     "lifePhotos": [],
     "candles": 2
-  },
-  {
-    "id": "1747520181620",
-    "name": "Amaury F Dos Santos 2",
-    "slug": "amaury-dossantos-3",
-    "birth": "1952-05-03",
-    "death": "2025-04-20",
-    "eulogy": "Some words about the eulogy",
-    "story": "life short",
-    "cause": "Parkinsons",
-    "family": [
-      {
-        "first": "",
-        "last": ""
-      }
-    ],
-    "photo": "1747520181619-dd5e8193-b4cb-4557-a9e4-1ad8e42068de.JPG",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": []
-  },
-  {
-    "id": "1747521172770",
-    "name": "Amaury Dos Santos 4",
-    "slug": "afds",
-    "birth": "1952-05-03",
-    "death": "2025-04-20",
-    "eulogy": "Some Eulogy",
-    "story": "Some Life story",
-    "cause": "Parkinsons",
-    "family": [
-      {
-        "first": "",
-        "last": ""
-      }
-    ],
-    "photo": "1747521172769-dad-and-tia.JPG",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": []
-  },
-  {
-    "id": "1747521611240",
-    "name": "Amaury dos Santos",
-    "slug": "ads1",
-    "birth": "1952-05-03",
-    "death": "2025-04-20",
-    "eulogy": "asdfasdf",
-    "story": "asdfasdfsadf",
-    "cause": "",
-    "family": [
-      {
-        "first": "",
-        "last": ""
-      }
-    ],
-    "photo": "1747521611238-e3a6f3a5-8a3c-4f96-bb03-1cd466caa0b5.jpg",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": []
-  },
-  {
-    "id": "1747680762432",
-    "name": "John Smith",
-    "slug": "john-smith",
-    "birth": "1940-01-20",
-    "death": "2024-01-30",
-    "eulogy": "asdfasd",
-    "story": "asdfasdf",
-    "cause": "asdfasdfasdfasdf",
-    "family": [
-      {
-        "first": "",
-        "last": ""
-      }
-    ],
-    "photo": "1747680762431-aaron-pfp.png",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": []
   },
   {
     "id": "1747686128620",
@@ -163,13 +83,15 @@
     "lifePhotos": [
       {
         "filename": "740-volvo-concept.png",
-        "description": "asdfasdfasdf"
+        "description": "asdfasdfasdf",
+        "previewUrl": "/uploads/740-volvo-concept.png"
       },
       {
         "filename": "Untitled_Artwork.jpg",
-        "description": ""
+        "description": "",
+        "previewUrl": "/uploads/Untitled_Artwork.jpg"
       }
     ],
-    "candles": 10
+    "candles": 12
   }
 ]

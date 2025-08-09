@@ -83,13 +83,15 @@
     "lifePhotos": [
       {
         "filename": "740-volvo-concept.png",
-        "description": "asdfasdfasdf"
+        "description": "asdfasdfasdf",
+        "previewUrl": "/uploads/740-volvo-concept.png"
       },
       {
         "filename": "Untitled_Artwork.jpg",
-        "description": ""
+        "description": "",
+        "previewUrl": "/uploads/Untitled_Artwork.jpg"
       }
     ],
-    "candles": 11
+    "candles": 12
   }
 ]

@@ -23,6 +23,7 @@ interface FormData {
 export default function CreateProfilePage() {
   const { status, data: session } = useSession();
   const router = useRouter();
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>({
     name: "",
     slug: "",
@@ -42,7 +43,12 @@ export default function CreateProfilePage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [lifePhotos, setLifePhotos] = useState<
-    { file: File | null; description: string }[]
+    {
+      file: File | null;
+      filename?: string;
+      description: string;
+      preview?: string;
+    }[]
   >([{ file: null, description: "" }]);
 
   const addLifePhoto = () => {
@@ -125,10 +131,7 @@ export default function CreateProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setFormStatus("loading");
     setErrorMessage("");
@@ -138,20 +141,34 @@ export default function CreateProfilePage() {
     if (photoFile) formData.append("photo", photoFile);
     formData.append("family", JSON.stringify(family));
 
-    // 👇 Add life photo metadata and files BEFORE fetch
-    formData.append(
-      "lifePhotos",
-      JSON.stringify(
-        lifePhotos.map((photo, i) => ({
-          filename: photo.file.name,
-          description: photo.description,
-        }))
-      )
-    );
+    // Build metadata + attach files (skip empty rows)
+    const preparedLifePhotos: { filename: string; description: string }[] = [];
 
-    lifePhotos.forEach((photo, i) => {
-      formData.append(`lifePhoto_${i}`, photo.file);
+    lifePhotos.forEach((p, i) => {
+      // New upload
+      if (p?.file instanceof File) {
+        const stored = `${Date.now()}-${i}-${p.file.name.replace(/\s+/g, "-")}`;
+        // Append file with the stored name so server saves it consistently
+        formData.append(`lifePhoto_${i}`, p.file, stored);
+        preparedLifePhotos.push({
+          filename: stored,
+          description: p.description || "",
+        });
+        return;
+      }
+      // Existing (edit mode) row with only a filename
+      if (p?.filename) {
+        preparedLifePhotos.push({
+          filename: p.filename,
+          description: p.description || "",
+        });
+        return;
+      }
+      // No file chosen — drop row
     });
+
+    // Attach the metadata JSON to the same multipart request
+    formData.append("lifePhotos", JSON.stringify(preparedLifePhotos));
 
     // Add createdBy if user is logged in
     if (session?.user?.email) {
@@ -159,56 +176,63 @@ export default function CreateProfilePage() {
     }
 
     try {
-      const res = await fetch("/api/profiles", {
-        method: "POST",
-        body: formData,
-      });
-
+      const res = await fetch("/api/profiles", { method: "POST", body: formData });
       if (!res.ok) {
-        const error = await res
-          .json()
-          .catch(() => ({ message: "Something went wrong" }));
+        const error = await res.json().catch(() => ({ message: "Something went wrong" }));
         throw new Error(error.message || "Failed to create memorial");
       }
-
-      const data = await res.json();
+    
+      const payload = await res.json().catch(() => ({} as any));
+      const targetSlug = payload?.slug?.trim?.() || form.slug.trim();
+    
+      setCreatedSlug(targetSlug);
       setFormStatus("success");
-
-      setTimeout(() => {
-        router.push(`/profiles/${data.slug}`);
-      }, 2000);
     } catch (error) {
       console.error("Error submitting form:", error);
-      setErrorMessage(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong");
       setFormStatus("error");
-    }
+    }    
   };
 
   // Success Screen
-  if (formStatus === "success") {
+  if (formStatus === "success" && createdSlug) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center text-gray-800">
         <div className="backdrop-blur-lg p-10 rounded-lg shadow-xl max-w-md mx-auto">
           <h1 className="text-3xl font-bold mb-4">Memorial Created</h1>
           <p className="text-md text-gray-700 mb-6">
-            Thank you for honoring the life of your loved one. Their memory
-            lives on.
+            What would you like to do next?
           </p>
-          <p className="text-sm text-gray-600 mb-6">
-            Redirecting to the memorial page...
+  
+          <div className="flex flex-col gap-3">
+            <Link
+              href={`/profiles/${createdSlug}/aftercare?tab=browse`}
+              className="inline-block px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Browse providers
+            </Link>
+            <Link
+              href={`/profiles/${createdSlug}/aftercare?tab=diy`}
+              className="inline-block px-5 py-2 border rounded hover:bg-gray-50 transition"
+            >
+              I’ll do it myself
+            </Link>
+            <Link
+              href={`/profiles/${createdSlug}`}
+              className="inline-block px-5 py-2 rounded border transition"
+            >
+              View memorial only
+            </Link>
+          </div>
+  
+          <p className="text-xs text-gray-500 mt-4">
+            Some listings are sponsored. We never sell your data.
           </p>
-          <Link
-            href="/"
-            className="inline-block px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          >
-            Return Home
-          </Link>
         </div>
       </div>
     );
   }
+  
 
   // Loading State
   if (formStatus === "loading") {

@@ -7,6 +7,7 @@ import CommentForm from "@/components/CommentForm";
 import CandleButton from "@/components/CandleButton";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import AftercarePrompt from "@/components/aftercare/AftercarePrompt";
 
 interface Comment {
   id: string;
@@ -14,6 +15,11 @@ interface Comment {
   author: string;
   approved: boolean;
   createdAt: string;
+}
+
+interface LifePhoto {
+  filename: string;
+  description?: string;
 }
 
 interface Profile {
@@ -29,6 +35,8 @@ interface Profile {
   family?: { first: string; last: string }[];
   comments?: Comment[];
   createdBy?: string;
+  candles?: number;
+  lifePhotos?: LifePhoto[];
 }
 
 function formatDate(dateStr: string | undefined) {
@@ -67,16 +75,17 @@ const causeDonationMap: Record<string, { label: string; url: string }> = {
   },
 };
 
-interface PageProps {
-  params: { slug: string };
-}
+type Params = { slug: string };
 
 export default async function ProfilePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<Params> | Params; // handle both shapes
 }) {
-  const profile = await getProfileBySlug(params.slug);
+  const resolved = params instanceof Promise ? await params : params;
+  const { slug } = resolved;
+
+  const profile = await getProfileBySlug(slug);
   if (!profile) return notFound();
 
   const session = await getServerSession(authOptions);
@@ -95,6 +104,7 @@ export default async function ProfilePage({
           Edit Profile
         </Link>
       )}
+      <AftercarePrompt slug={slug} />
 
       <h1 className="text-3xl font-bold">{profile.name}</h1>
       {profile.photo && (
@@ -148,12 +158,12 @@ export default async function ProfilePage({
           <p className="whitespace-pre-line">{profile.story}</p>
         </div>
       )}
-      {profile.lifePhotos?.length > 0 && (
+      {profile.lifePhotos && profile.lifePhotos.length > 0 && (
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Life in Photos</h2>
 
           <div className="space-y-6 border-l-2 border-gray-300 pl-4">
-            {profile.lifePhotos.map((photo: any, index: number) => (
+            {profile.lifePhotos.map((photo: LifePhoto, index: number) => (
               <div key={index} className="relative pl-4">
                 <div className="absolute -left-[9px] top-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
                 <img

@@ -93,5 +93,119 @@
       }
     ],
     "candles": 12
+  },
+  {
+    "id": "1754799634677",
+    "name": "John Everyman",
+    "slug": "john-everyman",
+    "birth": "2001-01-01",
+    "death": "2022-01-02",
+    "eulogy": "THis is the eulogy",
+    "story": "This is the life story",
+    "cause": "Parkinsons ",
+    "family": [
+      {
+        "first": "William",
+        "last": "Everyman"
+      },
+      {
+        "first": "James",
+        "last": "Everyman"
+      },
+      {
+        "first": "Jenny",
+        "last": "Everyman"
+      }
+    ],
+    "photo": "1754799634674-dad-21.JPG",
+    "createdBy": "willdossantosdesigns@gmail.com",
+    "comments": [],
+    "lifePhotos": [
+      {
+        "filename": "1754799634675-1754799634618-0-a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG",
+        "description": ""
+      },
+      {
+        "filename": "1754799634675-1754799634618-1-d497b437-03ee-491b-8535-ac9c4b2a9939.JPG",
+        "description": ""
+      },
+      {
+        "filename": "1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG",
+        "description": ""
+      }
+    ],
+    "candles": 0
+  },
+  {
+    "id": "1754800753243",
+    "name": "William Hanes",
+    "slug": "william-hanes",
+    "birth": "2001-01-01",
+    "death": "2022-01-02",
+    "eulogy": "This is a eulogy that I want going here",
+    "story": "This is a life story that we have going on",
+    "cause": "Parkinsons",
+    "family": [
+      {
+        "first": "James",
+        "last": "Hanes"
+      },
+      {
+        "first": "Mike",
+        "last": "Hanes"
+      },
+      {
+        "first": "Jim",
+        "last": "Hanes"
+      }
+    ],
+    "photo": "1754800753241-main-dad-3.png",
+    "createdBy": "willdossantosdesigns@gmail.com",
+    "comments": [],
+    "lifePhotos": [
+      {
+        "filename": "1754800753242-life_0-1754800752979-0-5da85f85-1f51-4fa3-9ad7-6cdc146d45e9.JPG",
+        "description": ""
+      },
+      {
+        "filename": "1754800753242-life_1-1754800752979-1-39e6df7f-96b7-4196-938f-89a6a4d6a3a0.JPG",
+        "description": ""
+      },
+      {
+        "filename": "1754800753243-life_2-1754800752979-2-1283da2e-e78e-4564-88eb-c0e086eae1cc.jpg",
+        "description": ""
+      }
+    ],
+    "candles": 1
+  },
+  {
+    "id": "1754802121351",
+    "name": "Wyatt Earp",
+    "slug": "wyatt-earp",
+    "birth": "2000-02-02",
+    "death": "2022-02-02",
+    "eulogy": "This is a eulogy",
+    "story": "This is the life story",
+    "cause": "Old Age",
+    "family": [
+      {
+        "first": "James",
+        "last": "Earp"
+      }
+    ],
+    "photo": "1754802121346-main-dad-1.JPG",
+    "createdBy": "willdossantosdesigns@gmail.com",
+    "comments": [],
+    "lifePhotos": [
+      {
+        "filename": "1754802121349-life_0-1754802121288-0-dad-and-tia.JPG",
+        "description": ""
+      },
+      {
+        "filename": "1754802121350-life_1-1754802121289-1-c100d4d9-3ca3-4f3b-b452-de39980f2dc1.JPG",
+        "description": ""
+      }
+    ],
+    "candles": 1
   }
 ]

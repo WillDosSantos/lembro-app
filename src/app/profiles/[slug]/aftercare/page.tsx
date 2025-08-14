@@ -18,17 +18,35 @@ const CATEGORIES = [
   { key: "fundraising", label: "Fundraising" },
 ];
 
-export default function AftercarePage({ params }: { params: Promise<Params> | Params }) {
-  const resolvedParams = params instanceof Promise ? use(params) : params;
-  const { slug } = resolvedParams;
+export default function AftercarePage({
+  params,
+}: {
+  params: Promise<Params> | Params;
+}) {
+  const resolved = params instanceof Promise ? use(params) : params;
+  const { slug } = resolved;
   
   const sp = useSearchParams();
+  const [pendingLoc, setPendingLoc] = useState("Meridian, ID");
+  const [useGeo, setUseGeo] = useState(true);
+  const [searchStamp, setSearchStamp] = useState(0);
   const [tab, setTab] = useState(sp.get("tab") === "browse" ? "browse" : "diy");
   const [loc, setLoc] = useState("Meridian, ID");
   const [category, setCategory] = useState<string | null>(null);
 
+  const onSearch = () => {
+    setLoc(pendingLoc.trim());
+    setUseGeo(false);        // manual override
+    setSearchStamp((n) => n + 1);
+  };
+  
+  const useMyLocation = () => {
+    setUseGeo(true);
+    setSearchStamp((n) => n + 1); // force refresh with GPS
+  };
+
   const selectedLabel = useMemo(
-    () => CATEGORIES.find(c => c.key === category)?.label ?? "All services",
+    () => CATEGORIES.find((c) => c.key === category)?.label ?? "All services",
     [category]
   );
 
@@ -58,17 +76,26 @@ export default function AftercarePage({ params }: { params: Promise<Params> | Pa
       {tab === "browse" ? (
         <>
           <div className="mt-6 flex flex-wrap gap-3 items-center">
-            <input
-              className="input input-bordered"
-              placeholder="City, ZIP, or State"
-              value={loc}
-              onChange={e => setLoc(e.target.value)}
-            />
+            <div className="join">
+              <input
+                className="input input-bordered join-item"
+                placeholder="City or ZIP"
+                value={pendingLoc}
+                onChange={(e) => setPendingLoc(e.target.value)}
+              />
+              <button className="btn join-item" onClick={onSearch}>
+                Search
+              </button>
+            </div>
+            <button className="btn btn-ghost" onClick={useMyLocation}>Use my location</button>
+
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(c => (
+              {CATEGORIES.map((c) => (
                 <button
                   key={c.key}
-                  className={`badge p-3 cursor-pointer ${category === c.key ? "badge-primary" : "badge-ghost"}`}
+                  className={`badge p-3 cursor-pointer ${
+                    category === c.key ? "badge-primary" : "badge-ghost"
+                  }`}
                   onClick={() => setCategory(category === c.key ? null : c.key)}
                 >
                   {c.label}
@@ -77,7 +104,14 @@ export default function AftercarePage({ params }: { params: Promise<Params> | Pa
             </div>
             <div className="text-sm opacity-70">Showing: {selectedLabel}</div>
           </div>
-          <ProvidersGrid loc={loc} category={category} profileSlug={slug} />
+
+          <ProvidersGrid 
+            loc={loc} 
+            category={category} 
+            profileSlug={slug} 
+            useGeo={useGeo}
+            searchStamp={searchStamp}
+          />
         </>
       ) : (
         <DIYPlanner slug={slug} />

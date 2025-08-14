@@ -1,20 +1,32 @@
 "use client";
 import { useState } from "react";
 
-export default function ProviderCard({ provider, profileSlug }: { provider: any; profileSlug: string }) {
+export default function ProviderCard({
+  provider,
+  profileSlug,
+}: {
+  provider: any;
+  profileSlug: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="rounded-2xl border p-4 bg-base-100">
       <div className="flex items-center gap-3">
         {provider.logoUrl ? (
-          <img src={provider.logoUrl} alt="" className="w-10 h-10 rounded-lg object-cover" />
+          <img
+            src={provider.logoUrl}
+            alt=""
+            className="w-10 h-10 rounded-lg object-cover"
+          />
         ) : (
           <div className="w-10 h-10 rounded-lg bg-base-200" />
         )}
         <div className="flex-1">
           <div className="font-semibold">{provider.name}</div>
-          <div className="text-xs opacity-70 capitalize">{provider.categories.join(" · ").replaceAll("_", " ")}</div>
+          <div className="text-xs opacity-70 capitalize">
+            {provider.categories.join(" · ").replaceAll("_", " ")}
+          </div>
         </div>
         {provider.tier !== "free" && (
           <span className="badge badge-warning text-xs">Sponsored</span>
@@ -25,14 +37,30 @@ export default function ProviderCard({ provider, profileSlug }: { provider: any;
 
       <div className="mt-4 flex gap-2">
         {provider.website && (
-          <a className="btn btn-sm btn-outline" href={provider.website} target="_blank">
+          <a
+            className="btn btn-sm btn-outline"
+            href={provider.website}
+            target="_blank"
+          >
             Visit site
           </a>
         )}
-        <button className="btn btn-sm btn-primary" onClick={() => setOpen(true)}>
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => setOpen(true)}
+        >
           Contact
         </button>
       </div>
+
+      {(provider.address || provider.distanceKm != null) && (
+        <div className="text-xs opacity-70 mt-1">
+          {provider.address ? provider.address : null}
+          {provider.distanceKm != null
+            ? ` • ${provider.distanceKm.toFixed(1)} km away`
+            : null}
+        </div>
+      )}
 
       {open && (
         <dialog className="modal modal-open">
@@ -44,7 +72,11 @@ export default function ProviderCard({ provider, profileSlug }: { provider: any;
               onClose={() => setOpen(false)}
             />
           </div>
-          <form method="dialog" className="modal-backdrop" onClick={() => setOpen(false)}>
+          <form
+            method="dialog"
+            className="modal-backdrop"
+            onClick={() => setOpen(false)}
+          >
             <button>close</button>
           </form>
         </dialog>
@@ -84,12 +116,35 @@ function LeadForm({
 
   return (
     <form className="space-y-3 mt-3" onSubmit={submit}>
-      <input name="name" className="input input-bordered w-full" placeholder="Your name" required />
-      <input name="email" type="email" className="input input-bordered w-full" placeholder="Email" required />
-      <input name="phone" className="input input-bordered w-full" placeholder="Phone (optional)" />
-      <textarea name="message" className="textarea textarea-bordered w-full" placeholder="What do you need?" />
-      <button className="btn btn-primary w-full" type="submit">Send</button>
-      <p className="text-xs opacity-70">We’ll share this info only with this provider.</p>
+      <input
+        name="name"
+        className="input input-bordered w-full"
+        placeholder="Your name"
+        required
+      />
+      <input
+        name="email"
+        type="email"
+        className="input input-bordered w-full"
+        placeholder="Email"
+        required
+      />
+      <input
+        name="phone"
+        className="input input-bordered w-full"
+        placeholder="Phone (optional)"
+      />
+      <textarea
+        name="message"
+        className="textarea textarea-bordered w-full"
+        placeholder="What do you need?"
+      />
+      <button className="btn btn-primary w-full" type="submit">
+        Send
+      </button>
+      <p className="text-xs opacity-70">
+        We’ll share this info only with this provider.
+      </p>
     </form>
   );
 }

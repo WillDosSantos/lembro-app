@@ -325,38 +325,6 @@ export default function CreateProfilePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="birth"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Birth Date
-            </label>
-            <input
-              id="birth"
-              name="birth"
-              type="date"
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="death"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Death Date
-            </label>
-            <input
-              id="death"
-              name="death"
-              type="date"
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
-            />
-          </div>
-        </div>
 
         <div>
           <label

@@ -35,7 +35,7 @@
         "approved": false
       }
     ],
-    "candles": 4
+    "candles": 7
   },
   {
     "id": "1747426161549",
@@ -60,7 +60,7 @@
     "createdBy": "willdossantosdesigns@gmail.com",
     "comments": [],
     "lifePhotos": [],
-    "candles": 2
+    "candles": 3
   },
   {
     "id": "1747686128620",
@@ -79,7 +79,15 @@
     ],
     "photo": "9x16_A_man_standing_in_a_wheat_field_.png",
     "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
+    "comments": [
+      {
+        "id": "c857e961-5613-4f8c-86ef-92f00292bd89",
+        "message": "This is a comment that needs to be approved ",
+        "author": "willdossantosdesigns@gmail.com",
+        "createdAt": "2025-08-11T19:19:40.719Z",
+        "approved": true
+      }
+    ],
     "lifePhotos": [
       {
         "filename": "740-volvo-concept.png",
@@ -92,7 +100,7 @@
         "previewUrl": "/uploads/Untitled_Artwork.jpg"
       }
     ],
-    "candles": 12
+    "candles": 14
   },
   {
     "id": "1754799634677",
@@ -123,18 +131,21 @@
     "lifePhotos": [
       {
         "filename": "1754799634675-1754799634618-0-a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG",
-        "description": ""
+        "description": "",
+        "previewUrl": "/uploads/1754799634675-1754799634618-0-a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG"
       },
       {
         "filename": "1754799634675-1754799634618-1-d497b437-03ee-491b-8535-ac9c4b2a9939.JPG",
-        "description": ""
+        "description": "",
+        "previewUrl": "/uploads/1754799634675-1754799634618-1-d497b437-03ee-491b-8535-ac9c4b2a9939.JPG"
       },
       {
         "filename": "1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG",
-        "description": ""
+        "description": "",
+        "previewUrl": "/uploads/1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG"
       }
     ],
-    "candles": 0
+    "candles": 1
   },
   {
     "id": "1754800753243",
@@ -176,7 +187,7 @@
         "description": ""
       }
     ],
-    "candles": 1
+    "candles": 3
   },
   {
     "id": "1754802121351",
@@ -206,6 +217,6 @@
         "description": ""
       }
     ],
-    "candles": 1
+    "candles": 4
   }
 ]

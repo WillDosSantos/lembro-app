@@ -1,14 +1,17 @@
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+type Params = { slug: string };
 
 const profilesPath = path.join(process.cwd(), "data", "profiles.json");
 
 export async function POST(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  ctx: { params: Params } | { params: Promise<Params> }
 ) {
-  const slug = params.slug;
+  const p = ctx.params instanceof Promise ? await ctx.params : ctx.params;
+  const { slug } = p;
   const data = await readFile(profilesPath, "utf8").catch(() => "[]");
   const profiles = JSON.parse(data);
 

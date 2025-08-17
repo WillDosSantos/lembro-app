@@ -4,6 +4,8 @@ import { useSearchParams } from "next/navigation";
 import ProvidersGrid from "@/components/aftercare/ProvidersGrid";
 import DIYPlanner from "@/components/aftercare/DIYPlanner";
 
+import SearchProviders from "./SearchProviders"; // client child in same folder
+
 type Params = { slug: string };
 
 const CATEGORIES = [
@@ -18,6 +20,8 @@ const CATEGORIES = [
   { key: "fundraising", label: "Fundraising" },
 ];
 
+const DEFAULT_CATEGORY = CATEGORIES[0].key; // "mortuary"
+
 export default function AftercarePage({
   params,
 }: {
@@ -25,30 +29,30 @@ export default function AftercarePage({
 }) {
   const resolved = params instanceof Promise ? use(params) : params;
   const { slug } = resolved;
-  
+
   const sp = useSearchParams();
   const [pendingLoc, setPendingLoc] = useState("Meridian, ID");
   const [useGeo, setUseGeo] = useState(true);
   const [searchStamp, setSearchStamp] = useState(0);
   const [tab, setTab] = useState(sp.get("tab") === "browse" ? "browse" : "diy");
   const [loc, setLoc] = useState("Meridian, ID");
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(DEFAULT_CATEGORY);
 
   const onSearch = () => {
     setLoc(pendingLoc.trim());
-    setUseGeo(false);        // manual override
+    setUseGeo(false); // manual override
     setSearchStamp((n) => n + 1);
   };
-  
+
   const useMyLocation = () => {
     setUseGeo(true);
     setSearchStamp((n) => n + 1); // force refresh with GPS
   };
 
-  const selectedLabel = useMemo(
-    () => CATEGORIES.find((c) => c.key === category)?.label ?? "All services",
-    [category]
-  );
+  const selectedLabel = useMemo(() => {
+    const key = category ?? DEFAULT_CATEGORY;
+    return CATEGORIES.find((c) => c.key === key)?.label ?? "All services";
+  }, [category]);
 
   useEffect(() => {
     // Try prefill from browser
@@ -87,14 +91,16 @@ export default function AftercarePage({
                 Search
               </button>
             </div>
-            <button className="btn btn-ghost" onClick={useMyLocation}>Use my location</button>
+            <button className="btn btn-ghost" onClick={useMyLocation}>
+              Use my location
+            </button>
 
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((c) => (
                 <button
                   key={c.key}
                   className={`badge p-3 cursor-pointer ${
-                    category === c.key ? "badge-primary" : "badge-ghost"
+                    (category ?? DEFAULT_CATEGORY) === c.key ? "badge-primary" : "badge-ghost"
                   }`}
                   onClick={() => setCategory(category === c.key ? null : c.key)}
                 >
@@ -105,10 +111,10 @@ export default function AftercarePage({
             <div className="text-sm opacity-70">Showing: {selectedLabel}</div>
           </div>
 
-          <ProvidersGrid 
-            loc={loc} 
-            category={category} 
-            profileSlug={slug} 
+          <ProvidersGrid
+            loc={loc}
+            category={category ?? DEFAULT_CATEGORY} // ✅ use current selection
+            profileSlug={slug}
             useGeo={useGeo}
             searchStamp={searchStamp}
           />

@@ -35,7 +35,7 @@
         "approved": false
       }
     ],
-    "candles": 7
+    "candles": 8
   },
   {
     "id": "1747426161549",
@@ -145,7 +145,7 @@
         "previewUrl": "/uploads/1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG"
       }
     ],
-    "candles": 1
+    "candles": 3
   },
   {
     "id": "1754800753243",
@@ -217,6 +217,6 @@
         "description": ""
       }
     ],
-    "candles": 4
+    "candles": 5
   }
 ]

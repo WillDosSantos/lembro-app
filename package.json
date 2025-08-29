@@ -6,18 +6,25 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postcompile": "mkdir -p abis && cp artifacts/contracts/MemorialRegistry.sol/MemorialRegistry.json abis/MemorialRegistry.json && cp artifacts/contracts/RemembranceBadges.sol/RemembranceBadges.json abis/RemembranceBadges.json"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
+    "@tanstack/react-query": "^5.85.5",
+    "dotenv": "^17.2.1",
     "next": "15.3.1",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.3.5",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "viem": "^2.34.0",
+    "wagmi": "^2.16.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
@@ -26,6 +33,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
+    "hardhat": "^2.26.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
     "typescript": "^5"

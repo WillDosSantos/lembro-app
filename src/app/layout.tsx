@@ -3,6 +3,7 @@ import "./globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import NavBar from "@/components/NavBar";
 import { Lexend } from 'next/font/google';
+import Providers from "./providers";
 
 
 const lexend = Lexend({
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className="font-lexend">
         <SessionWrapper>
           <NavBar />
-          {children}
+          <Providers>{children}</Providers>
         </SessionWrapper>
       </body>
     </html>

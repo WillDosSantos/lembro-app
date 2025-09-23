@@ -1,93 +1,41 @@
-"use client";
+'use client'
 
-import { useEffect, useMemo, useState } from "react";
-import { useAccount, useReadContract, useWatchContractEvent } from "wagmi";
-import { BADGES_ABI, BADGES_ADDR } from "@/lib/contracts";
+import { useAccount } from 'wagmi'
+import { useLightCandle } from '@/hooks/useLightCandle'
 
-type Props = { memorialId: number };
-
-export default function LightCandle({ memorialId }: Props) {
-  const { address } = useAccount();
-  const [status, setStatus] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const year = useMemo(() => new Date().getFullYear(), []);
-
-  // 1. Read current candle count
-  const { data: uniqueCount, refetch: refetchCount } = useReadContract({
-    address: BADGES_ADDR,
-    abi: BADGES_ABI,
-    functionName: "candlesForMemorial",
-    args: [BigInt(memorialId)],
-  });
-
-  // 2. Watch CandleLit event
-  useWatchContractEvent({
-    address: BADGES_ADDR,
-    abi: BADGES_ABI,
-    eventName: "CandleLit",
-    args: {
-      memorialId: BigInt(memorialId),
-      year: BigInt(year),
-    },
-    onLogs(logs) {
-      refetchCount();
-      if (
-        logs.some(
-          (l) =>
-            (l.args?.account as `0x${string}` | undefined)?.toLowerCase() ===
-            address?.toLowerCase()
-        )
-      ) {
-        setStatus("Candle lit ✨—Badge minted to your wallet.");
-      }
-    },
-  });
-
-  // 3. Call backend API
-  async function light() {
-    setLoading(true);
-    setError(null);
-    setStatus(null);
-    try {
-      const res = await fetch("/api/blockchain/light-candle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ memorialId, year, walletAddress: address ?? null }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
-
-      setStatus(
-        data.onChain
-          ? "Submitting mint… waiting for confirmation."
-          : "Candle lit ✨—Thank you for remembering."
-      );
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+export default function LightCandle({ memorialId }: { memorialId: number }) {
+  const { isConnected } = useAccount()
+  const { light, status, error, isLoading, lastTxHash } = useLightCandle()
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={light}
-          disabled={loading}
-          className="border rounded px-4 py-2 disabled:opacity-60"
-        >
-          {loading ? "Lighting…" : "🕯️ Light a Candle"}
-        </button>
-        <span className="text-sm text-gray-600">
-          {typeof uniqueCount === "bigint"
-            ? `${uniqueCount} candles this year`
-            : "—"}
-        </span>
-      </div>
+    <div className="space-y-3">
+      <button
+        onClick={() => light({ memorialId })}
+        disabled={!isConnected || isLoading}
+        className="px-4 py-2 rounded-xl bg-black text-white disabled:opacity-50"
+      >
+        {isLoading ? 'Lighting…' : 'Light Candle'}
+      </button>
+
+      {!isConnected && (
+        <p className="text-sm text-amber-600">
+          Connect your wallet to light a candle.
+        </p>
+      )}
+
       {status && <p className="text-sm text-green-700">{status}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
+
+      {lastTxHash && (
+        <a
+          className="text-xs underline text-blue-700"
+          href={`https://testnet.snowtrace.io/tx/${lastTxHash}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View on Snowtrace
+        </a>
+      )}
     </div>
-  );
+  )
 }

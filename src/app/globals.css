@@ -35,6 +35,10 @@
     margin: 0;
   }
 
+
+  input, textarea {
+    background-color: #ffffff;
+  }
   a {
     color: inherit;
     text-decoration: none;

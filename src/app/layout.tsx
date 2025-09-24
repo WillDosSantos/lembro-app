@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import NavBar from "@/components/NavBar";
-import { Lexend } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 
 
-const lexend = Lexend({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-lexend',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
   display: 'swap',
 });
 
@@ -22,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={lexend.variable}>
-      <body className="font-lexend">
+    <html lang="en" className={poppins.variable}>
+      <body className="font-poppins bg-white text-black">
         <SessionWrapper>
           <NavBar />
           {children}

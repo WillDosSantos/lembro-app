@@ -1,48 +1,42 @@
 // app/page.tsx
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import Link from "next/link";
 
 export default function Home() {
-  const [search, setSearch] = useState('');
-  const router = useRouter();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) {
-      router.push(`/search?q=${encodeURIComponent(search)}`);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div 
+      className="max-h-[1000px] bg-cover bg-center bg-no-repeat overflow-hidden"
+      style={{
+        backgroundImage: "url('/hero-img.png')"
+      }}
+    >
       {/* Hero */}
-      <div className="max-w-4xl mx-auto text-center py-20 px-4">
-        <h1 className="text-4xl font-bold mb-4">Preserve the Stories of Those Who Matter Most</h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Create a beautiful online memorial to honor the life and legacy of your loved one.
-        </p>
+      <div className="max-w-5xl mx-auto text-left py-40">
+        <div className="max-w-2xl">
+          <h1 className="text-4xl mb-4">
+            <strong>Honor and preserve</strong> the stories of the ones we miss.
+          </h1>
+          <p className="text-lg text-gray-600 mb-8">
+            Use the power of AI and blockchain to create a beautiful online
+            memorial to honor the life and legacy of your loved ones.
+          </p>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search memorials..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded w-full sm:w-96"
-          />
-          <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-            Search
-          </button>
-        </form>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href="/create" className="inline-block">
+              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                Create a free memorial
+              </button>
+            </Link>
 
-        {/* Create CTA */}
-        <Link href="/create" className="inline-block mt-4 text-blue-600 hover:underline font-medium">
-          Or create a new memorial →
-        </Link>
+            <Link href="/explore" className="inline-block">
+              <button className="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 font-medium transition-colors">
+                View Memorials
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

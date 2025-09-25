@@ -25,8 +25,8 @@ export default function CandleButton({ slug, initialCount }: { slug: string; ini
       <button
         onClick={handleClick}
         disabled={lit}
-        className={`px-4 py-2 rounded text-white font-semibold ${
-          lit ? "bg-yellow-600" : "bg-orange-500 hover:bg-orange-600"
+        className={`px-4 py-2 rounded-xl text-white font-semibold ${
+          lit ? "bg-yellow-600" : "bg-black hover:bg-orange-600"
         }`}
       >
         {lit ? "Your candle is lit 🕯️" : "Light a Candle"}

@@ -8,6 +8,7 @@ import CandleButton from "@/components/CandleButton";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AftercarePrompt from "@/components/aftercare/AftercarePrompt";
+import PhotoCarousel from "@/components/PhotoCarousel";
 
 interface Comment {
   id: string;
@@ -120,7 +121,7 @@ export default async function ProfilePage({
         />
 
         {/* Content */}
-        <div className="relative z-10 flex items-center gap-6 p-8">
+        <div className="relative z-10 flex items-center gap-24 p-8">
             {profile.photo && (
               <div className="w-[400px] h-[400px] rounded-3xl shadow-lg overflow-hidden" data-aos="fade-right" data-aos-delay="500">
                 <img
@@ -165,93 +166,35 @@ export default async function ProfilePage({
                 )}
               </p>
             )}
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col items-center sm:flex-row gap-4 mt-6" data-aos="fade-up" data-aos-delay="3000">
+              <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
+              {isOwner && (
+                <Link
+                  href={`/profiles/${profile.slug}/edit`}
+                  className="text-black transition font-medium text-center"
+                >
+                  Edit Profile
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Navigation and Content Below Hero */}
       <div className="p-8 max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-sm text-blue-600 hover:underline">
-            ← Back to Home
-          </Link>
-          {isOwner && (
-            <Link
-              href={`/profiles/${profile.slug}/edit`}
-              className="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-            >
-              Edit Profile
-            </Link>
-          )}
-        </div>
-
         <AftercarePrompt slug={slug} />
-        <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
-      {(profile.birth || profile.death) && (
-        <p className="text-gray-600">
-          {profile.birth && (
-            <>
-              <strong>Born:</strong> {formatDate(profile.birth)}
-            </>
-          )}
-          {profile.death && (
-            <>
-              &nbsp;|&nbsp;<strong>Died:</strong> {formatDate(profile.death)}
-            </>
-          )}
-        </p>
-      )}
-      {profile.cause && (
-        <div className="space-y-2">
-          <p>
-            <strong>Cause of Death:</strong> {profile.cause}
-          </p>
-          {causeDonationMap[profile.cause.toLowerCase()] && (
-            <a
-              href={causeDonationMap[profile.cause.toLowerCase()].url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              {causeDonationMap[profile.cause.toLowerCase()].label}
-            </a>
-          )}
-        </div>
-      )}
+    
       {profile.eulogy && (
-        <div>
-          <h2 className="text-xl font-semibold">Eulogy</h2>
+        <div className="max-w-2xl mx-auto my-20">
+          <h2 className="text-xl font-semibold text-center mb-4 uppercase" style={{ letterSpacing: '0.28em' }}>Eulogy</h2>
           <p className="whitespace-pre-line">{profile.eulogy}</p>
         </div>
       )}
-      {profile.story && (
-        <div>
-          <h2 className="text-xl font-semibold">Life Story</h2>
-          <p className="whitespace-pre-line">{profile.story}</p>
-        </div>
-      )}
       {profile.lifePhotos && profile.lifePhotos.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xl font-semibold mb-4">Life in Photos</h2>
-
-          <div className="space-y-6 border-l-2 border-gray-300 pl-4">
-            {profile.lifePhotos.map((photo: LifePhoto, index: number) => (
-              <div key={index} className="relative pl-4">
-                <div className="absolute -left-[9px] top-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
-                <img
-                  src={`/uploads/${photo.filename}`}
-                  alt={`Life photo ${index + 1}`}
-                  className="w-full max-w-xl rounded shadow-md"
-                />
-                {photo.description && (
-                  <p className="mt-2 text-gray-700 text-sm">
-                    {photo.description}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+        <PhotoCarousel photos={profile.lifePhotos} />
       )}
 
       {profile.family && profile.family.length > 0 && (

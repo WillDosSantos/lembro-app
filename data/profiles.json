@@ -59,8 +59,44 @@
     "photo": "dad-21.JPG",
     "createdBy": "willdossantosdesigns@gmail.com",
     "comments": [],
-    "lifePhotos": [],
-    "candles": 5
+    "lifePhotos": [
+      {
+        "filename": "5da85f85-1f51-4fa3-9ad7-6cdc146d45e9.JPG",
+        "description": "Amaury and Viva his grandmother at his wedding",
+        "previewUrl": "blob:http://localhost:3001/3b3ad07b-b6be-4352-a304-a05dfd460b76"
+      },
+      {
+        "filename": "39e6df7f-96b7-4196-938f-89a6a4d6a3a0.JPG",
+        "description": "Amaury was married to Joan when he was 21 years old in Brazil",
+        "previewUrl": "blob:http://localhost:3001/7c58a153-39f1-4429-9ff0-3b4acfb04700"
+      },
+      {
+        "filename": "1283da2e-e78e-4564-88eb-c0e086eae1cc.jpg",
+        "description": "He was no stranger to feeding the wild life.",
+        "previewUrl": "blob:http://localhost:3001/dcd69e85-4f51-418f-9186-c8ecb1ea5c79"
+      },
+      {
+        "filename": "a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG",
+        "description": "He cared deeply for his family",
+        "previewUrl": "blob:http://localhost:3001/7bfbba40-5a57-46a1-bd3b-d7d4920247bd"
+      },
+      {
+        "filename": "d497b437-03ee-491b-8535-ac9c4b2a9939.JPG",
+        "description": "I still remember the times when dad would play guitar for me as I fell asleep.",
+        "previewUrl": "blob:http://localhost:3001/1e8775b8-6cb4-4dd1-a2e0-539ac067a4fd"
+      },
+      {
+        "filename": "ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG",
+        "description": "He was a joyful guy. Full of life and energy that was contagious",
+        "previewUrl": "blob:http://localhost:3001/dd69f65c-1eaf-4736-9ef6-c9b8da1bbec5"
+      },
+      {
+        "filename": "dad-1.JPG",
+        "description": "He traveled the world and wanted to take his family everwhere he went to show them it's wonders.",
+        "previewUrl": "blob:http://localhost:3001/b24ee625-2150-49f8-9dff-d610e65ca8a0"
+      }
+    ],
+    "candles": 8
   },
   {
     "id": "1747686128620",

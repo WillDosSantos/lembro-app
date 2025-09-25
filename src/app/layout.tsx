@@ -4,6 +4,7 @@ import SessionWrapper from "../components/SessionWrapper";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Poppins } from 'next/font/google';
+import AOSInit from "@/components/AOSInit";
 
 
 const poppins = Poppins({
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body className="font-poppins bg-white text-black">
+        <AOSInit />
         <SessionWrapper>
           <NavBar />
           {children}

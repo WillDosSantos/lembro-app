@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Glowing Orbs Animation Keyframes */
+@keyframes float1 {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes float2 {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(15px) scale(0.9);
+    opacity: 0.25;
+  }
+}
+
+@keyframes float3 {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-25px) scale(1.05);
+    opacity: 0.2;
+  }
+}
+
+@keyframes float4 {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(10px) scale(1.15);
+    opacity: 0.35;
+  }
+}
+
 @layer base {
   :root {
     --background: #ffffff;

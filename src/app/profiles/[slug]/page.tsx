@@ -92,29 +92,101 @@ export default async function ProfilePage({
   const isOwner = session?.user?.email === profile.createdBy;
 
   return (
-    <div className="p-8 max-w-2xl mx-auto space-y-6">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
-        ← Back to Home
-      </Link>
-      {isOwner && (
-        <Link
-          href={`/profiles/${profile.slug}/edit`}
-          className="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-        >
-          Edit Profile
-        </Link>
-      )}
-      <AftercarePrompt slug={slug} />
-
-      <h1 className="text-3xl font-bold">{profile.name}</h1>
-      {profile.photo && (
-        <img
-          src={`/uploads/${profile.photo}`}
-          alt={profile.name}
-          className="w-full max-w-md object-cover rounded"
+    <div className="relative">
+      {/* Full Screen Hero Container */}
+      <div className="hero-container relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Blurred Background Overlay */}
+        {profile.photo && (
+          <div
+            className="absolute inset-0 w-full h-full profile-blur-bg"
+            style={{
+              backgroundImage: `url('/uploads/${profile.photo}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              zIndex: 1,
+              opacity: 0.7,
+            }}
+          />
+        )}
+        
+        {/* White Gradient Overlay for Navigation Visibility */}
+        <div 
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 20%, transparent 50%)',
+            zIndex: 2,
+          }}
         />
-      )}
-      <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
+
+        {/* Content */}
+        <div className="relative z-10 flex items-center gap-6 p-8">
+            {profile.photo && (
+              <div className="w-[400px] h-[400px] rounded-3xl shadow-lg overflow-hidden" data-aos="fade-right" data-aos-delay="500">
+                <img
+                  src={`/uploads/${profile.photo}`}
+                  alt={profile.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+          <div className="text-left" data-aos="fade-up" data-aos-delay="1000">
+            <div className="mb-4">
+              {(() => {
+                const nameParts = profile.name.split(' ');
+                const firstName = nameParts[0] || '';
+                const lastName = nameParts.slice(1).join(' ') || '';
+                return (
+                  <>
+                    <h1 className="text-6xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="1500">
+                      {firstName}
+                    </h1>
+                    {lastName && (
+                      <h1 className="text-2xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="2000">
+                        {lastName}
+                      </h1>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+            {(profile.birth || profile.death) && (
+              <p className="text-black text-lg mt-2" data-aos="fade-up" data-aos-delay="2500">
+                {profile.birth && (
+                  <>
+                    <strong>Born:</strong> {formatDate(profile.birth)}
+                  </>
+                )}
+                {profile.death && (
+                  <>
+                    &nbsp;|&nbsp;<strong>Died:</strong>{" "}
+                    {formatDate(profile.death)}
+                  </>
+                )}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation and Content Below Hero */}
+      <div className="p-8 max-w-5xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-sm text-blue-600 hover:underline">
+            ← Back to Home
+          </Link>
+          {isOwner && (
+            <Link
+              href={`/profiles/${profile.slug}/edit`}
+              className="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            >
+              Edit Profile
+            </Link>
+          )}
+        </div>
+
+        <AftercarePrompt slug={slug} />
+        <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
       {(profile.birth || profile.death) && (
         <p className="text-gray-600">
           {profile.birth && (
@@ -194,12 +266,13 @@ export default async function ProfilePage({
           </ul>
         </div>
       )}
-      <CommentForm slug={profile.slug} />
-      <CommentSection
-        comments={profile.comments || []}
-        profileSlug={profile.slug}
-        createdBy={profile.createdBy || ""}
-      />
+        <CommentForm slug={profile.slug} />
+        <CommentSection
+          comments={profile.comments || []}
+          profileSlug={profile.slug}
+          createdBy={profile.createdBy || ""}
+        />
+      </div>
     </div>
   );
 }

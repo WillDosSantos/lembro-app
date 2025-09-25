@@ -19,7 +19,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="w-full bg-white px-6 py-4 shadow-lg shadow-white/20" style={{ boxShadow: '0 8px 25px -25px rgba(255, 255, 255, 1)' }}>
+        <nav className="w-full px-6 py-4 absolute top-0 left-0 right-0 z-50" style={{ boxShadow: 'none' }}>
       <div className="max-w-5xl mx-auto flex justify-between items-center">
         <div className="flex items-start items-center space-x-4">
           <Link href="/" className="text-lg font-semibold text-gray-800">Lembra</Link>
@@ -35,7 +35,7 @@ export default function NavBar() {
             />
             <button 
               type="submit" 
-              className="absolute right-[7px] top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              className="absolute right-[7px] top-1/2 transform -translate-y-1/2 bg-black text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors"
             >
               <BiSearch className="w-4 h-4" />
             </button>

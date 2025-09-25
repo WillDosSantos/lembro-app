@@ -47,6 +47,19 @@
   }
 }
 
+/* Profile Background Blur */
+.profile-blur-bg {
+  filter: blur(40px) !important;
+  -webkit-filter: blur(40px) !important;
+  transform: scale(1.1) !important;
+}
+
+/* Test blur class */
+.test-blur {
+  filter: blur(20px) !important;
+  -webkit-filter: blur(20px) !important;
+}
+
 @layer base {
   :root {
     --background: #ffffff;

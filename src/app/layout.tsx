@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SessionWrapper from "../components/SessionWrapper";
 import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import { Poppins } from 'next/font/google';
 
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         <SessionWrapper>
           <NavBar />
           {children}
+          <Footer />
         </SessionWrapper>
       </body>
     </html>

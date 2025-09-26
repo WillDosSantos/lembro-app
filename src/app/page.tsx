@@ -3,6 +3,8 @@
 
 import Link from "next/link";
 import { BiPlay } from "react-icons/bi";
+import AnimatedPins from "@/components/AnimatedPins";
+import DNAHelixBackground from "@/components/DNAHelixBackground";
 
 export default function Home() {
   return (
@@ -13,49 +15,6 @@ export default function Home() {
           backgroundImage: "url('/hero-img.png')",
         }}
       >
-        {/* Glowing Orbs Animation */}
-        <div className="absolute inset-0 pointer-events-none z-10">
-          <div 
-            className="absolute w-32 h-32 rounded-full animate-pulse"
-            style={{
-              background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 50%, transparent 70%)',
-              top: '15%',
-              right: '5%',
-              animation: 'float1 8s ease-in-out infinite',
-              opacity: 0.6,
-            }}
-          />
-          <div 
-            className="absolute w-24 h-24 rounded-full animate-pulse"
-            style={{
-              background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 50%, transparent 70%)',
-              top: '45%',
-              right: '15%',
-              animation: 'float2 10s ease-in-out infinite',
-              opacity: 0.7,
-            }}
-          />
-          <div 
-            className="absolute w-40 h-40 rounded-full animate-pulse"
-            style={{
-              background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 50%, transparent 70%)',
-              top: '70%',
-              right: '8%',
-              animation: 'float3 12s ease-in-out infinite',
-              opacity: 0.5,
-            }}
-          />
-          <div 
-            className="absolute w-20 h-20 rounded-full animate-pulse"
-            style={{
-              background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 50%, transparent 70%)',
-              top: '30%',
-              right: '25%',
-              animation: 'float4 9s ease-in-out infinite',
-              opacity: 0.8,
-            }}
-          />
-        </div>
         {/* Hero */}
         <div className="max-w-5xl mx-auto text-left py-40 relative">
           <div className="max-w-xl pb-20 text-gray-700" data-aos="fade-up">
@@ -127,19 +86,27 @@ export default function Home() {
                 ones we miss.{" "}
               </p>
             </div>
-            <div>
-              <img
-                src="/world-map.png"
-                alt="Bringing loved ones together"
-                className="absolute w-full max-w-[800px] top-32 mt-0"
-                data-aos="fade-up"
-              />
+            <div className="relative">
+              {/* Map Container */}
+              <div className="relative w-full max-w-[1000px] h-[500px]">
+                <img
+                  src="/world-map.png"
+                  alt="Bringing loved ones together"
+                  className="absolute w-full max-w-[1000px] top-32 mt-0"
+                  data-aos="fade-up"
+                />
+                {/* Pins Container */}
+                <div className="absolute inset-0 z-20">
+                  <AnimatedPins />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
       <section className="relative py-20">
-        <div className="max-w-5xl mx-auto">
+        <DNAHelixBackground />
+        <div className="max-w-5xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center min-h-[400px]">
             <div data-aos="fade-right">
               <img

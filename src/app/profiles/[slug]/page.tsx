@@ -266,7 +266,7 @@ export default async function ProfilePage({
         <AftercarePrompt slug={slug} />
 
         {profile.eulogy && (
-          <div className="max-w-2xl mx-auto my-20">
+          <div className="max-w-2xl mx-auto my-20" data-aos="fade-up">
             <h2
               className="text-xl font-semibold text-center mb-4 uppercase"
               style={{ letterSpacing: "0.28em" }}
@@ -280,16 +280,18 @@ export default async function ProfilePage({
 
       {/* Photo Carousel - Full Width Section */}
       {profile.lifePhotos && profile.lifePhotos.length > 0 && (
-        <PhotoCarousel
-          photos={profile.lifePhotos}
-          profilePhoto={profile.photo}
-        />
+        <div data-aos="fade-up">
+          <PhotoCarousel
+            photos={profile.lifePhotos}
+            profilePhoto={profile.photo}
+          />
+        </div>
       )}
 
       {/* Family Members - Back to Container */}
       <div className="p-8 max-w-5xl mx-auto space-y-6">
         {profile.family && profile.family.length > 0 && (
-          <div className="mt-20">
+          <div className="mt-20" data-aos="fade-up">
             <div className="text-center mb-12">
               <h2
                 className="text-xl font-semibold text-center mb-4 uppercase"
@@ -357,7 +359,7 @@ export default async function ProfilePage({
             </div>
           </div>
         )}
-        <div className="max-w-2xl mx-auto my-20 pb-40">
+        <div className="max-w-2xl mx-auto my-20 pb-40" data-aos="fade-up">
           <CommentSection
             comments={profile.comments || []}
             profileSlug={profile.slug}

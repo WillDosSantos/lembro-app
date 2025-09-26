@@ -35,68 +35,102 @@
         "approved": false
       }
     ],
-    "candles": 11
+    "candles": 13
   },
   {
     "id": "1747426161549",
     "name": "Amaury Dos Santos",
     "slug": "amaury-dossantos-2",
     "birth": "1952-05-03",
-    "death": "2025-04-20",
+    "death": "2025-04-21",
     "eulogy": "Amaury dos Santos was a man whose life was defined by love, hard work, and faith. Born in [birthplace], he carried with him from an early age a deep sense of responsibility and resilience. Those who knew him best would tell you that he was a man of quiet strength, someone who showed more through his actions than through his words.\n\nHe built a life grounded in family, devoting himself to being a husband, a father, and a friend who could be counted on in every season. He believed in the power of hard work, in doing things the right way, and in lifting others up whenever he had the chance. His character was marked by kindness, humility, and a steady presence that gave comfort to everyone around him.\n\nTo his children, he was a guide and protector, shaping their lives with the lessons he lived out daily—integrity, generosity, and perseverance. To his friends and community, he was someone who left people better than he found them, whether through a warm smile, a thoughtful word, or the simple reliability of always showing up.\n\nAmaury also had a lighter side—a sense of humor that brightened even the hardest of days and stories that could fill a room with laughter. These moments are remembered just as much as his wisdom and strength, because they revealed the fullness of his heart.\n\nThough his time with us feels far too short, Amaury’s impact lives on in the lives he touched. His legacy is carried forward in the family who loves him, in the values he instilled, and in the memories we will hold close forever. He showed us what it means to live with love, to serve with humility, and to trust in God’s goodness even in difficult times.\n\nAmaury dos Santos will be deeply missed, but never forgotten. His story continues in each of us who had the honor of knowing and loving him.",
     "story": "Amaury dos Santos was a man whose life was defined by love, hard work, and faith. Born in [birthplace], he carried with him from an early age a deep sense of responsibility and resilience. Those who knew him best would tell you that he was a man of quiet strength, someone who showed more through his actions than through his words.\n\nHe built a life grounded in family, devoting himself to being a husband, a father, and a friend who could be counted on in every season. He believed in the power of hard work, in doing things the right way, and in lifting others up whenever he had the chance. His character was marked by kindness, humility, and a steady presence that gave comfort to everyone around him.\n\nTo his children, he was a guide and protector, shaping their lives with the lessons he lived out daily—integrity, generosity, and perseverance. To his friends and community, he was someone who left people better than he found them, whether through a warm smile, a thoughtful word, or the simple reliability of always showing up.\n\nAmaury also had a lighter side—a sense of humor that brightened even the hardest of days and stories that could fill a room with laughter. These moments are remembered just as much as his wisdom and strength, because they revealed the fullness of his heart.\n\nThough his time with us feels far too short, Amaury’s impact lives on in the lives he touched. His legacy is carried forward in the family who loves him, in the values he instilled, and in the memories we will hold close forever. He showed us what it means to live with love, to serve with humility, and to trust in God’s goodness even in difficult times.\n\nAmaury dos Santos will be deeply missed, but never forgotten. His story continues in each of us who had the honor of knowing and loving him.",
     "cause": "Parkinsons",
     "family": [
       {
         "first": "William",
-        "last": "Santos"
+        "last": "dos Santos",
+        "relationship": "Son"
       },
       {
         "first": "Jenny ",
-        "last": "dos Santos"
+        "last": "dos Santos",
+        "relationship": "Daughter"
+      },
+      {
+        "first": "Sheila",
+        "last": "dos Santos",
+        "relationship": "Wife",
+        "description": ""
+      },
+      {
+        "first": "Margie",
+        "last": "dos Santos",
+        "relationship": "Sister",
+        "description": ""
+      },
+      {
+        "first": "Solange",
+        "last": "Carnevali",
+        "relationship": "Daughter",
+        "description": ""
+      },
+      {
+        "first": "Natali",
+        "last": "Carnevali",
+        "relationship": "Other",
+        "description": ""
       }
     ],
-    "photo": "dad-21.JPG",
+    "photo": "dad-smiling.gif",
     "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
+    "comments": [
+      {
+        "id": "75fa2011-5d56-458e-961e-88925e1b7440",
+        "message": "Thank you to everyone for coming to pay their respects to my father. He was truly someone that had so much impact on my life and influenced me in so many ways. I haven't had a chance to really sit down and think too much about his passing. I've been spending a lot of time working on this app and trying to make it easy for those that are in need of it.\n\nI think that is probably what he would have wanted me to do. He wouldn't have wanted me to sit and mourn him, because he is with Jesus. He is celebrating his eternal life now. But there are those of us still here and we need to the best job possible not just for ourself but for others.\n\nThis app will forever hold true to that virtue. Help people whenever and wherever possible. Make things easier for them during a difficult time. And recognize that tomorrow isn't guaranteed. It's a gift. So this is my gift to the world.\n\nOn behalf of my father, Amaury Ferriera dos Santos, thank you so much and my God grant you peace during this time.\n\nWill-",
+        "author": "willdossantosdesigns@gmail.com",
+        "createdAt": "2025-09-25T22:16:25.735Z",
+        "approved": true
+      }
+    ],
     "lifePhotos": [
       {
         "filename": "5da85f85-1f51-4fa3-9ad7-6cdc146d45e9.JPG",
         "description": "Amaury and Viva his grandmother at his wedding",
-        "previewUrl": "blob:http://localhost:3001/3b3ad07b-b6be-4352-a304-a05dfd460b76"
+        "previewUrl": "/uploads/5da85f85-1f51-4fa3-9ad7-6cdc146d45e9.JPG"
       },
       {
         "filename": "39e6df7f-96b7-4196-938f-89a6a4d6a3a0.JPG",
         "description": "Amaury was married to Joan when he was 21 years old in Brazil",
-        "previewUrl": "blob:http://localhost:3001/7c58a153-39f1-4429-9ff0-3b4acfb04700"
+        "previewUrl": "/uploads/39e6df7f-96b7-4196-938f-89a6a4d6a3a0.JPG"
       },
       {
         "filename": "1283da2e-e78e-4564-88eb-c0e086eae1cc.jpg",
         "description": "He was no stranger to feeding the wild life.",
-        "previewUrl": "blob:http://localhost:3001/dcd69e85-4f51-418f-9186-c8ecb1ea5c79"
+        "previewUrl": "/uploads/1283da2e-e78e-4564-88eb-c0e086eae1cc.jpg"
       },
       {
         "filename": "a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG",
         "description": "He cared deeply for his family",
-        "previewUrl": "blob:http://localhost:3001/7bfbba40-5a57-46a1-bd3b-d7d4920247bd"
+        "previewUrl": "/uploads/a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG"
       },
       {
         "filename": "d497b437-03ee-491b-8535-ac9c4b2a9939.JPG",
         "description": "I still remember the times when dad would play guitar for me as I fell asleep.",
-        "previewUrl": "blob:http://localhost:3001/1e8775b8-6cb4-4dd1-a2e0-539ac067a4fd"
+        "previewUrl": "/uploads/d497b437-03ee-491b-8535-ac9c4b2a9939.JPG"
       },
       {
         "filename": "ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG",
         "description": "He was a joyful guy. Full of life and energy that was contagious",
-        "previewUrl": "blob:http://localhost:3001/dd69f65c-1eaf-4736-9ef6-c9b8da1bbec5"
+        "previewUrl": "/uploads/ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG"
       },
       {
         "filename": "dad-1.JPG",
         "description": "He traveled the world and wanted to take his family everwhere he went to show them it's wonders.",
-        "previewUrl": "blob:http://localhost:3001/b24ee625-2150-49f8-9dff-d610e65ca8a0"
+        "previewUrl": "/uploads/dad-1.JPG"
       }
     ],
-    "candles": 8
+    "candles": 22
   },
   {
     "id": "1747686128620",
@@ -181,7 +215,7 @@
         "previewUrl": "/uploads/1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG"
       }
     ],
-    "candles": 3
+    "candles": 4
   },
   {
     "id": "1754800753243",
@@ -223,7 +257,7 @@
         "description": ""
       }
     ],
-    "candles": 3
+    "candles": 4
   },
   {
     "id": "1754802121351",

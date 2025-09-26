@@ -54,6 +54,51 @@
   transform: scale(1.1) !important;
 }
 
+/* Golden Color Animation */
+@keyframes goldenColor {
+  0% {
+    color: #000;
+  }
+  25% {
+    color: #B8860B;
+  }
+  50% {
+    color: #DAA520;
+  }
+  75% {
+    color: #B8860B;
+  }
+  100% {
+    color: #000;
+  }
+}
+
+.golden-glow {
+  animation: goldenColor 3s ease-in-out !important;
+}
+
+.golden-glow h1 {
+  animation: goldenColor 3s ease-in-out !important;
+}
+
+/* Golden Ember Particles */
+.golden-ember {
+  color: #DAA520;
+  font-size: 12px;
+  text-shadow: 
+    0 0 4px rgba(255, 215, 0, 0.8),
+    0 0 8px rgba(255, 215, 0, 0.6),
+    0 0 12px rgba(255, 215, 0, 0.4);
+  z-index: 10;
+  transition: all 0.1s ease;
+}
+
+/* Subtle golden color for permanent effect */
+.golden-glow-permanent {
+  color: #B8860B;
+  transition: all 0.3s ease;
+}
+
 /* Test blur class */
 .test-blur {
   filter: blur(20px) !important;

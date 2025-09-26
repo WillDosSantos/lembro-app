@@ -56,7 +56,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto space-y-8">
+    <div className="pt-24 px-8 pb-8 max-w-3xl mx-auto space-y-8">
       <h1 className="text-2xl font-bold">Welcome, {session.user.name || session.user.email}</h1>
 
       <section>

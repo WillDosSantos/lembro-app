@@ -24,7 +24,7 @@ export default function ExplorePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 pt-24 px-8 pb-8">
       <h1 className="text-3xl font-bold mb-6">The ones we remember</h1>
 
       {profiles.length === 0 ? (

@@ -26,8 +26,9 @@ export default function LoginPage() {
   };
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto p-8 space-y-4">
-      <h1 className="text-2xl font-bold">Log In</h1>
+    <div className="pt-24">
+      <form onSubmit={handleLogin} className="max-w-md mx-auto p-8 space-y-4">
+        <h1 className="text-2xl font-bold">Log In</h1>
       <input
         className="w-full border p-2"
         type="email"
@@ -45,6 +46,7 @@ export default function LoginPage() {
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
         Log In
       </button>
-    </form>
+      </form>
+    </div>
   );
 }

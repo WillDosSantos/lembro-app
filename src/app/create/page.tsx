@@ -247,7 +247,7 @@ export default function CreateProfilePage() {
 
   // Form View
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="pt-24 px-8 pb-8 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Who do you want to remember?</h1>
       <p>Tell us about the person that you want to remember.</p>
       {errorMessage && (

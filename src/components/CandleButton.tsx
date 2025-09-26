@@ -10,6 +10,13 @@ export default function CandleButton({ slug, initialCount }: { slug: string; ini
     if (lit) return;
     setLit(true);
 
+    // Trigger the golden glow animation
+    console.log('Dispatching candleLit event');
+    const glowEvent = new CustomEvent('candleLit', { 
+      detail: { slug } 
+    });
+    window.dispatchEvent(glowEvent);
+
     const res = await fetch(`/api/profiles/${slug}/candle`, {
       method: "POST",
     });

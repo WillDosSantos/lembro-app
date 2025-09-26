@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AftercarePrompt from "@/components/aftercare/AftercarePrompt";
 import PhotoCarousel from "@/components/PhotoCarousel";
+import CandleGlowEffect from "@/components/CandleGlowEffect";
 
 interface Comment {
   id: string;
@@ -33,7 +34,13 @@ interface Profile {
   eulogy?: string;
   story?: string;
   cause?: string;
-  family?: { first: string; last: string }[];
+  family?: { 
+    first: string; 
+    last: string; 
+    photo?: string; 
+    relationship?: string; 
+    description?: string; 
+  }[];
   comments?: Comment[];
   createdBy?: string;
   candles?: number;
@@ -43,6 +50,11 @@ interface Profile {
 function formatDate(dateStr: string | undefined) {
   if (!dateStr) return "";
   const date = new Date(dateStr);
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    console.error("Invalid date:", dateStr);
+    return dateStr; // Return the original string if invalid
+  }
   return new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(date);
 }
 
@@ -50,7 +62,15 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   const filePath = path.join(process.cwd(), "data", "profiles.json");
   const data = await fs.readFile(filePath, "utf8").catch(() => "[]");
   const profiles: Profile[] = JSON.parse(data);
-  return profiles.find((p) => p.slug === slug) || null;
+  const profile = profiles.find((p) => p.slug === slug) || null;
+  
+  if (profile) {
+    console.log("Profile loaded from file:", profile.name);
+    console.log("Birth date from file:", profile.birth);
+    console.log("Death date from file:", profile.death);
+  }
+  
+  return profile;
 }
 
 const causeDonationMap: Record<string, { label: string; url: string }> = {
@@ -131,28 +151,32 @@ export default async function ProfilePage({
                 />
               </div>
             )}
-          <div className="text-left" data-aos="fade-up" data-aos-delay="1000">
-            <div className="mb-4">
-              {(() => {
-                const nameParts = profile.name.split(' ');
-                const firstName = nameParts[0] || '';
-                const lastName = nameParts.slice(1).join(' ') || '';
-                return (
-                  <>
-                    <h1 className="text-6xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="1500">
-                      {firstName}
-                    </h1>
-                    {lastName && (
-                      <h1 className="text-2xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="2000">
-                        {lastName}
-                      </h1>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
+          <div className="text-left" data-aos="fade-up" data-aos-delay="200">
+              <div className="mb-4">
+                {(() => {
+                  const nameParts = profile.name.split(' ');
+                  const firstName = nameParts[0] || '';
+                  const lastName = nameParts.slice(1).join(' ') || '';
+                  return (
+                    <>
+                      <CandleGlowEffect>
+                        <h1 className="text-6xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="400">
+                          {firstName}
+                        </h1>
+                      </CandleGlowEffect>
+                      {lastName && (
+                        <CandleGlowEffect>
+                          <h1 className="text-2xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="600">
+                            {lastName}
+                          </h1>
+                        </CandleGlowEffect>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
             {(profile.birth || profile.death) && (
-              <p className="text-black text-lg mt-2" data-aos="fade-up" data-aos-delay="2500">
+              <p className="text-black text-lg mt-2" data-aos="fade-up" data-aos-delay="800">
                 {profile.birth && (
                   <>
                     <strong>Born:</strong> {formatDate(profile.birth)}
@@ -167,8 +191,8 @@ export default async function ProfilePage({
               </p>
             )}
             
-            {/* Action Buttons */}
-            <div className="flex flex-col items-center sm:flex-row gap-4 mt-6" data-aos="fade-up" data-aos-delay="3000">
+              {/* Action Buttons */}
+              <div className="flex flex-col items-center sm:flex-row gap-4 mt-6" data-aos="fade-up" data-aos-delay="1000">
               <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
               {isOwner && (
                 <Link
@@ -193,20 +217,73 @@ export default async function ProfilePage({
           <p className="whitespace-pre-line">{profile.eulogy}</p>
         </div>
       )}
+      </div>
+
+      {/* Photo Carousel - Full Width Section */}
       {profile.lifePhotos && profile.lifePhotos.length > 0 && (
-        <PhotoCarousel photos={profile.lifePhotos} />
+        <PhotoCarousel photos={profile.lifePhotos} profilePhoto={profile.photo} />
       )}
 
+      {/* Family Members - Back to Container */}
+      <div className="p-8 max-w-5xl mx-auto space-y-6">
       {profile.family && profile.family.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold">Family Members</h2>
-          <ul className="list-disc list-inside">
+        <div className="mt-20">
+          <div className="text-center mb-12">
+            <h2 className="text-xl font-semibold text-center mb-4 uppercase" style={{ letterSpacing: '0.28em' }}>Family Members</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              The people who shared their life and created lasting memories together
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {profile.family.map((member, i) => (
-              <li key={i}>
-                {member.first} {member.last}
-              </li>
+              <div key={i} className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="text-center">
+                  {/* Photo or Icon Placeholder */}
+                  <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                    {member.photo ? (
+                      <img
+                        src={`/uploads/${member.photo}`}
+                        alt={`${member.first} ${member.last}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <svg 
+                        className="w-10 h-10 text-gray-400" 
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                      >
+                        <path 
+                          fillRule="evenodd" 
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" 
+                          clipRule="evenodd" 
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  
+                  {/* Name */}
+                  <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                    {member.first} {member.last}
+                  </h3>
+                  
+                  {/* Relationship (if available) */}
+                  {member.relationship && (
+                    <p className="text-sm text-gray-500 mb-3">
+                      {member.relationship}
+                    </p>
+                  )}
+                  
+                  {/* Optional description or memory */}
+                  {member.description && (
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {member.description}
+                    </p>
+                  )}
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
         <CommentForm slug={profile.slug} />

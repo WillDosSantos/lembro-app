@@ -26,11 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body className="font-poppins bg-white text-black">
+      <body className="font-poppins bg-white text-black min-h-screen flex flex-col">
         <AOSInit />
         <SessionWrapper>
           <NavBar />
-          {children}
+          <main className="flex-grow">
+            {children}
+          </main>
           <Footer />
         </SessionWrapper>
       </body>

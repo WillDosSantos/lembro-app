@@ -36,13 +36,21 @@ export async function PUT(
 ) {
   const { slug } = await params;
   const body = await req.json();
+  
+  console.log("API received data:", body);
+  console.log("Birth date received:", body.birth);
+  console.log("Death date received:", body.death);
 
   const profiles = await readProfiles();
   const index = profiles.findIndex((p: any) => p.slug === slug);
   if (index === -1) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
+  console.log("Profile before update:", profiles[index]);
   profiles[index] = { ...profiles[index], ...body };
+  console.log("Profile after update:", profiles[index]);
+  
   await writeProfiles(profiles);
+  console.log("Profiles file written successfully");
   return NextResponse.json({ ok: true });
 }
 

@@ -33,8 +33,9 @@ export default function SignupPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 space-y-4">
-      <h1 className="text-2xl font-bold">Sign Up</h1>
+    <div className="pt-24">
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 space-y-4">
+        <h1 className="text-2xl font-bold">Sign Up</h1>
       
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
@@ -68,6 +69,7 @@ export default function SignupPage() {
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
         Sign Up
       </button>
-    </form>
+      </form>
+    </div>
   );
 }

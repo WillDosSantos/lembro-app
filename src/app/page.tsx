@@ -58,7 +58,7 @@ export default function Home() {
         </div>
         {/* Hero */}
         <div className="max-w-5xl mx-auto text-left py-40 relative">
-          <div className="max-w-xl pb-20" data-aos="fade-up">
+          <div className="max-w-xl pb-20 text-gray-700" data-aos="fade-up">
             <h1 className="text-4xl mb-4">
               <strong>Honor and preserve</strong> the stories of the ones we
               miss.
@@ -71,7 +71,7 @@ export default function Home() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/create" className="inline-block">
-                <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                <button className="bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 font-medium transition-colors">
                   Create a <strong>free</strong> memorial
                 </button>
               </Link>

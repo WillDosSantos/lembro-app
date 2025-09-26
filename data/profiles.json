@@ -39,7 +39,7 @@
   },
   {
     "id": "1747426161549",
-    "name": "Amaury Dos Santos",
+    "name": "Amaury Ferreira Dos Santos",
     "slug": "amaury-dossantos-2",
     "birth": "1952-05-03",
     "death": "2025-04-21",
@@ -66,7 +66,7 @@
       {
         "first": "Margie",
         "last": "dos Santos",
-        "relationship": "Sister",
+        "relationship": "Daughter",
         "description": ""
       },
       {
@@ -130,7 +130,7 @@
         "previewUrl": "/uploads/dad-1.JPG"
       }
     ],
-    "candles": 22
+    "candles": 32
   },
   {
     "id": "1747686128620",
@@ -171,51 +171,6 @@
       }
     ],
     "candles": 14
-  },
-  {
-    "id": "1754799634677",
-    "name": "John Everyman",
-    "slug": "john-everyman",
-    "birth": "2001-01-01",
-    "death": "2022-01-02",
-    "eulogy": "THis is the eulogy",
-    "story": "This is the life story",
-    "cause": "Parkinsons ",
-    "family": [
-      {
-        "first": "William",
-        "last": "Everyman"
-      },
-      {
-        "first": "James",
-        "last": "Everyman"
-      },
-      {
-        "first": "Jenny",
-        "last": "Everyman"
-      }
-    ],
-    "photo": "1754799634674-dad-21.JPG",
-    "createdBy": "willdossantosdesigns@gmail.com",
-    "comments": [],
-    "lifePhotos": [
-      {
-        "filename": "1754799634675-1754799634618-0-a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG",
-        "description": "",
-        "previewUrl": "/uploads/1754799634675-1754799634618-0-a0ff046f-3d64-4edb-86e0-03ecd25ed040.JPG"
-      },
-      {
-        "filename": "1754799634675-1754799634618-1-d497b437-03ee-491b-8535-ac9c4b2a9939.JPG",
-        "description": "",
-        "previewUrl": "/uploads/1754799634675-1754799634618-1-d497b437-03ee-491b-8535-ac9c4b2a9939.JPG"
-      },
-      {
-        "filename": "1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG",
-        "description": "",
-        "previewUrl": "/uploads/1754799634676-1754799634618-2-ce04b36a-679b-49a2-8be7-b53f07b98b60.JPG"
-      }
-    ],
-    "candles": 4
   },
   {
     "id": "1754800753243",

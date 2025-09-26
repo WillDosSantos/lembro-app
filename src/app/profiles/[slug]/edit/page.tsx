@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import ContributorManager from "@/components/ContributorManager";
 
 interface Params {
   slug: string;
@@ -38,6 +39,7 @@ export default function EditProfile() {
   const { data: session } = useSession();
   const router = useRouter();
   const [deleted, setDeleted] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [form, setForm] = useState<FormData>({
     name: "",
     birth: "",
@@ -59,7 +61,15 @@ export default function EditProfile() {
   
       const data = await res.json();
   
-      if (data.createdBy !== session?.user?.email) {
+      const ownerStatus = data.createdBy === session?.user?.email;
+      const isContributor = data.contributors?.some(
+        (c: any) => c.email === session?.user?.email && c.acceptedAt && c.role === 'editor'
+      );
+      const canEdit = ownerStatus || isContributor;
+
+      setIsOwner(ownerStatus);
+
+      if (!canEdit) {
         router.push(`/profiles/${slug}`);
       } else {
         console.log("Setting form data from API:", data);
@@ -122,6 +132,13 @@ export default function EditProfile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Don't submit if profile has been deleted
+    if (deleted) {
+      console.log("Profile has been deleted, skipping update");
+      return;
+    }
+    
     console.log("Form data being submitted:", form);
     console.log("Birth date in form:", form.birth);
     console.log("Death date in form:", form.death);
@@ -164,6 +181,12 @@ export default function EditProfile() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4 mt-40">
+      {deleted && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-800 font-medium">This profile has been deleted.</p>
+          <p className="text-red-700 text-sm">You will be redirected shortly.</p>
+        </div>
+      )}
       {/* Profile Photo Preview */}
       {form.photo && (
         <div className="mb-4">
@@ -312,7 +335,7 @@ export default function EditProfile() {
               <select
                 value={member.relationship || ""}
                 onChange={(e) => handleFamilyChange(index, "relationship", e.target.value)}
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded bg-white"
               >
                 <option value="">Select relationship...</option>
                 <option value="Spouse">Spouse</option>
@@ -470,6 +493,14 @@ export default function EditProfile() {
       >
         + Add Photo
       </button>
+
+      {/* Contributor Management */}
+      <div className="mt-8">
+        <ContributorManager 
+          profileSlug={slug} 
+          isOwner={isOwner} 
+        />
+      </div>
 
       <button
         type="submit"

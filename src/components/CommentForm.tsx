@@ -42,7 +42,7 @@ export default function CommentForm({ slug }: { slug: string }) {
       />
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 font-medium transition-colors"
         disabled={status === 'submitting'}
       >
         {status === 'submitting' ? 'Posting...' : 'Post Comment'}

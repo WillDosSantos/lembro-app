@@ -34,12 +34,12 @@ interface Profile {
   eulogy?: string;
   story?: string;
   cause?: string;
-  family?: { 
-    first: string; 
-    last: string; 
-    photo?: string; 
-    relationship?: string; 
-    description?: string; 
+  family?: {
+    first: string;
+    last: string;
+    photo?: string;
+    relationship?: string;
+    description?: string;
   }[];
   comments?: Comment[];
   createdBy?: string;
@@ -63,13 +63,13 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   const data = await fs.readFile(filePath, "utf8").catch(() => "[]");
   const profiles: Profile[] = JSON.parse(data);
   const profile = profiles.find((p) => p.slug === slug) || null;
-  
+
   if (profile) {
     console.log("Profile loaded from file:", profile.name);
     console.log("Birth date from file:", profile.birth);
     console.log("Death date from file:", profile.death);
   }
-  
+
   return profile;
 }
 
@@ -111,11 +111,19 @@ export default async function ProfilePage({
 
   const session = await getServerSession(authOptions);
   const isOwner = session?.user?.email === profile.createdBy;
+  const isContributor = profile.contributors?.some(
+    (c: any) =>
+      c.email === session?.user?.email && c.acceptedAt && c.role === "editor"
+  );
+  const canEdit = isOwner || isContributor;
+  const pendingInvitation = profile.contributors?.find(
+    (c: any) => c.email === session?.user?.email && !c.acceptedAt
+  );
 
   return (
     <div className="relative">
-      {/* Full Screen Hero Container */}
-      <div className="hero-container relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Responsive Hero Container */}
+      <div className="hero-container relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen flex items-center justify-center overflow-hidden">
         {/* Blurred Background Overlay */}
         {profile.photo && (
           <div
@@ -130,53 +138,72 @@ export default async function ProfilePage({
             }}
           />
         )}
-        
+
         {/* White Gradient Overlay for Navigation Visibility */}
-        <div 
+        <div
           className="absolute inset-0 w-full h-full pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 20%, transparent 50%)',
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 20%, transparent 50%)",
             zIndex: 2,
           }}
         />
 
         {/* Content */}
-        <div className="relative z-10 flex items-center gap-24 p-8">
-            {profile.photo && (
-              <div className="w-[400px] h-[400px] rounded-3xl shadow-lg overflow-hidden" data-aos="fade-right" data-aos-delay="500">
-                <img
-                  src={`/uploads/${profile.photo}`}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-          <div className="text-left" data-aos="fade-up" data-aos-delay="200">
-              <div className="mb-4">
-                {(() => {
-                  const nameParts = profile.name.split(' ');
-                  const firstName = nameParts[0] || '';
-                  const lastName = nameParts.slice(1).join(' ') || '';
-                  return (
-                    <>
+        <div className="relative z-10 flex flex-col lg:flex-row items-center lg:items-center gap-6 lg:gap-24 p-4 sm:p-6 lg:p-8 w-full max-w-6xl mx-auto">
+          {profile.photo && (
+            <div
+              className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] lg:w-[400px] lg:h-[400px] rounded-3xl shadow-lg overflow-hidden flex-shrink-0"
+              data-aos="fade-up"
+              data-aos-delay="500"
+            >
+              <img
+                src={`/uploads/${profile.photo}`}
+                alt={profile.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div className="text-center lg:text-left w-full" data-aos="fade-up" data-aos-delay="200">
+            <div className="mb-4">
+              {(() => {
+                const nameParts = profile.name.split(" ");
+                const firstName = nameParts[0] || "";
+                const lastName = nameParts.slice(1).join(" ") || "";
+                return (
+                  <>
+                    <CandleGlowEffect>
+                      <h1
+                        className="text-4xl sm:text-5xl lg:text-6xl font-bold text-black uppercase leading-tight"
+                        style={{ letterSpacing: "0.28em" }}
+                        data-aos="fade-up"
+                        data-aos-delay="400"
+                      >
+                        {firstName}
+                      </h1>
+                    </CandleGlowEffect>
+                    {lastName && (
                       <CandleGlowEffect>
-                        <h1 className="text-6xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="400">
-                          {firstName}
+                        <h1
+                          className="text-xl sm:text-2xl font-bold text-black uppercase leading-tight"
+                          style={{ letterSpacing: "0.28em" }}
+                          data-aos="fade-up"
+                          data-aos-delay="600"
+                        >
+                          {lastName}
                         </h1>
                       </CandleGlowEffect>
-                      {lastName && (
-                        <CandleGlowEffect>
-                          <h1 className="text-2xl font-bold text-black uppercase leading-tight" style={{ letterSpacing: '0.28em' }} data-aos="fade-up" data-aos-delay="600">
-                            {lastName}
-                          </h1>
-                        </CandleGlowEffect>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
             {(profile.birth || profile.death) && (
-              <p className="text-black text-lg mt-2" data-aos="fade-up" data-aos-delay="800">
+              <p
+                className="text-black text-base sm:text-lg mt-2"
+                data-aos="fade-up"
+                data-aos-delay="800"
+              >
                 {profile.birth && (
                   <>
                     <strong>Born:</strong> {formatDate(profile.birth)}
@@ -190,14 +217,21 @@ export default async function ProfilePage({
                 )}
               </p>
             )}
-            
-              {/* Action Buttons */}
-              <div className="flex flex-col items-center sm:flex-row gap-4 mt-6" data-aos="fade-up" data-aos-delay="1000">
-              <CandleButton slug={profile.slug} initialCount={profile.candles || 0} />
-              {isOwner && (
+
+            {/* Action Buttons */}
+            <div
+              className="flex flex-col lg:flex-row gap-4 mt-6 w-full max-w-sm mx-auto lg:mx-0 lg:max-w-none lg:items-start"
+              data-aos="fade-up"
+              data-aos-delay="1000"
+            >
+              <CandleButton
+                slug={profile.slug}
+                initialCount={profile.candles || 0}
+              />
+              {canEdit && (
                 <Link
                   href={`/profiles/${profile.slug}/edit`}
-                  className="text-black transition font-medium text-center"
+                  className="w-full lg:w-auto text-black transition font-medium text-center py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-50"
                 >
                   Edit Profile
                 </Link>
@@ -207,91 +241,130 @@ export default async function ProfilePage({
         </div>
       </div>
 
+      {/* Pending Invitation Banner */}
+      {pendingInvitation && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mx-8 my-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-yellow-800">
+                You have a pending invitation
+              </h3>
+              <p className="text-yellow-700">
+                You've been invited as a {pendingInvitation.role} for this
+                memorial.
+                <a href={`/profiles/${slug}/edit`} className="underline ml-1">
+                  Click here to accept the invitation
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation and Content Below Hero */}
       <div className="p-8 max-w-5xl mx-auto space-y-6">
         <AftercarePrompt slug={slug} />
-    
-      {profile.eulogy && (
-        <div className="max-w-2xl mx-auto my-20">
-          <h2 className="text-xl font-semibold text-center mb-4 uppercase" style={{ letterSpacing: '0.28em' }}>Eulogy</h2>
-          <p className="whitespace-pre-line">{profile.eulogy}</p>
-        </div>
-      )}
+
+        {profile.eulogy && (
+          <div className="max-w-2xl mx-auto my-20">
+            <h2
+              className="text-xl font-semibold text-center mb-4 uppercase"
+              style={{ letterSpacing: "0.28em" }}
+            >
+              Eulogy
+            </h2>
+            <p className="whitespace-pre-line">{profile.eulogy}</p>
+          </div>
+        )}
       </div>
 
       {/* Photo Carousel - Full Width Section */}
       {profile.lifePhotos && profile.lifePhotos.length > 0 && (
-        <PhotoCarousel photos={profile.lifePhotos} profilePhoto={profile.photo} />
+        <PhotoCarousel
+          photos={profile.lifePhotos}
+          profilePhoto={profile.photo}
+        />
       )}
 
       {/* Family Members - Back to Container */}
       <div className="p-8 max-w-5xl mx-auto space-y-6">
-      {profile.family && profile.family.length > 0 && (
-        <div className="mt-20">
-          <div className="text-center mb-12">
-            <h2 className="text-xl font-semibold text-center mb-4 uppercase" style={{ letterSpacing: '0.28em' }}>Family Members</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              The people who shared their life and created lasting memories together
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {profile.family.map((member, i) => (
-              <div key={i} className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                <div className="text-center">
-                  {/* Photo or Icon Placeholder */}
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                    {member.photo ? (
-                      <img
-                        src={`/uploads/${member.photo}`}
-                        alt={`${member.first} ${member.last}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <svg 
-                        className="w-10 h-10 text-gray-400" 
-                        fill="currentColor" 
-                        viewBox="0 0 20 20"
-                      >
-                        <path 
-                          fillRule="evenodd" 
-                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" 
-                          clipRule="evenodd" 
+        {profile.family && profile.family.length > 0 && (
+          <div className="mt-20">
+            <div className="text-center mb-12">
+              <h2
+                className="text-xl font-semibold text-center mb-4 uppercase"
+                style={{ letterSpacing: "0.28em" }}
+              >
+                Family Members
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                The people who shared their life and created lasting memories
+                together
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {profile.family.map((member, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100"
+                >
+                  <div className="text-center">
+                    {/* Photo or Icon Placeholder */}
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                      {member.photo ? (
+                        <img
+                          src={`/uploads/${member.photo}`}
+                          alt={`${member.first} ${member.last}`}
+                          className="w-full h-full object-cover"
                         />
-                      </svg>
+                      ) : (
+                        <svg
+                          className="w-10 h-10 text-gray-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </div>
+
+                    {/* Name */}
+                    <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                      {member.first} {member.last}
+                    </h3>
+
+                    {/* Relationship (if available) */}
+                    {member.relationship && (
+                      <p className="text-sm text-gray-500 mb-3">
+                        {member.relationship}
+                      </p>
+                    )}
+
+                    {/* Optional description or memory */}
+                    {member.description && (
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {member.description}
+                      </p>
                     )}
                   </div>
-                  
-                  {/* Name */}
-                  <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                    {member.first} {member.last}
-                  </h3>
-                  
-                  {/* Relationship (if available) */}
-                  {member.relationship && (
-                    <p className="text-sm text-gray-500 mb-3">
-                      {member.relationship}
-                    </p>
-                  )}
-                  
-                  {/* Optional description or memory */}
-                  {member.description && (
-                    <p className="text-sm text-gray-600 leading-relaxed">
-                      {member.description}
-                    </p>
-                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+        )}
+        <div className="max-w-2xl mx-auto my-20 pb-40">
+          <CommentSection
+            comments={profile.comments || []}
+            profileSlug={profile.slug}
+            createdBy={profile.createdBy || ""}
+          />
+          <CommentForm slug={profile.slug} />
         </div>
-      )}
-        <CommentForm slug={profile.slug} />
-        <CommentSection
-          comments={profile.comments || []}
-          profileSlug={profile.slug}
-          createdBy={profile.createdBy || ""}
-        />
       </div>
     </div>
   );

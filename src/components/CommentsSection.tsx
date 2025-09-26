@@ -19,11 +19,12 @@ export default function CommentSection({ comments, profileSlug, createdBy }: { c
   };
 
   return (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Comments</h2>
+    <div className="pt-32">
+      <h2 className="text-xl font-semibold text-center mb-4 uppercase" style={{ letterSpacing: '0.28em' }}>Condolences</h2>
       {localComments.length === 0 && <p className="text-sm text-gray-500">No comments yet.</p>}
       {localComments.map((c) => (
         <div key={c.id} className="border-t pt-4 mt-4 space-y-1">
+          <div className="px-16 py-8">
           <p className="text-sm text-gray-700 whitespace-pre-line">{c.message}</p>
           <p className="text-xs text-gray-400">— {c.author}</p>
           {isOwner && (
@@ -44,6 +45,7 @@ export default function CommentSection({ comments, profileSlug, createdBy }: { c
               </button>
             </div>
           )}
+          </div>
         </div>
       ))}
     </div>

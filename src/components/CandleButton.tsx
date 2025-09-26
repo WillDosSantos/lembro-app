@@ -28,12 +28,12 @@ export default function CandleButton({ slug, initialCount }: { slug: string; ini
   };
 
   return (
-    <div className="mt-6 text-center">
+    <div className="text-center">
       <button
         onClick={handleClick}
         disabled={lit}
-        className={`px-4 py-2 rounded-xl text-white font-semibold ${
-          lit ? "bg-yellow-600" : "bg-black hover:bg-orange-600"
+        className={`w-full lg:w-auto px-4 py-3 rounded-lg text-white font-medium ${
+          lit ? "bg-gray-700" : "bg-gray-700 hover:bg-gray-800"
         }`}
       >
         {lit ? "Your candle is lit 🕯️" : "Light a Candle"}

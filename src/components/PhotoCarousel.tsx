@@ -47,7 +47,7 @@ export default function PhotoCarousel({ photos, profilePhoto }: PhotoCarouselPro
   };
 
   return (
-    <div className="w-full py-20 mt-40" style={{
+    <div className="w-full py-20 mt-20" style={{
       background: generateBackground()
     }}>
       {profilePhoto && (
@@ -67,7 +67,7 @@ export default function PhotoCarousel({ photos, profilePhoto }: PhotoCarouselPro
         {/* Photo Carousel */}
         <div className="relative">
           {/* Stylized Container with Blurred Background */}
-          <div className="relative overflow-hidden border border-white/20 shadow-2xl rounded-4xl" style={{
+          <div className="relative overflow-hidden border border-white/10 shadow-2xl rounded-4xl" style={{
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05)',
             borderRadius: '32px',
           }}>
@@ -82,7 +82,7 @@ export default function PhotoCarousel({ photos, profilePhoto }: PhotoCarouselPro
                   backgroundRepeat: 'no-repeat',
                   filter: 'blur(200px)',
                   WebkitFilter: 'blur(200px)',
-                  opacity: 0.4,
+                  opacity: 0.2,
                   transform: 'scale(1.1)',
                   zIndex: 1,
                 }}
@@ -93,7 +93,7 @@ export default function PhotoCarousel({ photos, profilePhoto }: PhotoCarouselPro
             <div className="relative z-20">
               <div className="relative overflow-hidden rounded-4xl">
                 <div 
-                  className="flex transition-transform duration-500 ease-in-out"
+                  className="flex transition-transform duration-1000 ease-out"
                   style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                 >
                   {photos.map((photo: LifePhoto, index: number) => (

@@ -13,7 +13,10 @@ export default function DashboardPage() {
     if (session?.user?.email) {
       fetch("/api/profiles")
         .then(res => res.json())
-        .then(allProfiles => {
+        .then(data => {
+          // Check if the response is an array (success) or an error object
+          const allProfiles = Array.isArray(data) ? data : [];
+          
           // Get only the ones created by this user
           const userProfiles = allProfiles.filter((p: any) => p.createdBy === session.user.email);
           setProfiles(userProfiles);
@@ -27,6 +30,11 @@ export default function DashboardPage() {
             }))
           );
           setPendingComments(allPending);
+        })
+        .catch(error => {
+          console.error("Error fetching profiles:", error);
+          setProfiles([]);
+          setPendingComments([]);
         });
     }
   }, [session]);

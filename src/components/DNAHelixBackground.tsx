@@ -16,8 +16,12 @@ interface Dot {
 export default function DNAHelixBackground() {
   const [dots, setDots] = useState<Dot[]>([]);
   const [animationTime, setAnimationTime] = useState(0);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Set client-side flag
+    setIsClient(true);
+    
     // Generate DNA helix pattern dots
     const helixDots: Dot[] = [];
     const centerX = 50; // Center of the container
@@ -58,6 +62,11 @@ export default function DNAHelixBackground() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Don't render on server to avoid hydration mismatch
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center">

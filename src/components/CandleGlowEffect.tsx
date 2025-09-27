@@ -23,7 +23,6 @@ export default function CandleGlowEffect({ children, className = '' }: CandleGlo
 
   useEffect(() => {
     const handleCandleLit = () => {
-      console.log('CandleGlowEffect received candleLit event');
       setIsGlowing(true);
       
       // Create particle embers
@@ -40,7 +39,6 @@ export default function CandleGlowEffect({ children, className = '' }: CandleGlo
         });
       }
       setParticles(newParticles);
-      console.log('Created particles:', newParticles.length);
       
       // Remove the glow class after animation completes
       setTimeout(() => {

@@ -10,6 +10,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AftercarePrompt from "@/components/aftercare/AftercarePrompt";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import CandleGlowEffect from "@/components/CandleGlowEffect";
+import StorybookDisplay from "@/components/StorybookDisplay";
 
 interface Comment {
   id: string;
@@ -22,6 +23,32 @@ interface Comment {
 interface LifePhoto {
   filename: string;
   description?: string;
+}
+
+interface Story {
+  id: string;
+  content: string;
+  author: string;
+  authorEmail: string;
+  createdAt: string;
+  approved: boolean;
+}
+
+interface StorybookPage {
+  id: string;
+  title: string;
+  content: string;
+  photo?: string;
+  author?: string;
+  order: number;
+}
+
+interface GeneratedStorybook {
+  id: string;
+  title: string;
+  pages: StorybookPage[];
+  createdAt: string;
+  generatedBy: string;
 }
 
 interface Profile {
@@ -45,6 +72,14 @@ interface Profile {
   createdBy?: string;
   candles?: number;
   lifePhotos?: LifePhoto[];
+  stories?: Story[];
+  generatedStorybook?: GeneratedStorybook;
+  contributors?: {
+    email: string;
+    role: string;
+    invitedAt: string;
+    acceptedAt?: string;
+  }[];
 }
 
 function formatDate(dateStr: string | undefined) {
@@ -64,11 +99,7 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   const profiles: Profile[] = JSON.parse(data);
   const profile = profiles.find((p) => p.slug === slug) || null;
 
-  if (profile) {
-    console.log("Profile loaded from file:", profile.name);
-    console.log("Birth date from file:", profile.birth);
-    console.log("Death date from file:", profile.death);
-  }
+  // Profile loaded successfully
 
   return profile;
 }
@@ -277,6 +308,11 @@ export default async function ProfilePage({
           </div>
         )}
       </div>
+
+      {/* Generated Storybook Section */}
+      {profile.generatedStorybook && (
+        <StorybookDisplay storybook={profile.generatedStorybook} />
+      )}
 
       {/* Photo Carousel - Full Width Section */}
       {profile.lifePhotos && profile.lifePhotos.length > 0 && (

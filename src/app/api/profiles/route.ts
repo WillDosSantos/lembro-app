@@ -163,7 +163,21 @@ export async function POST(req: Request) {
 
     // Save to file
     const existing = await readFile(PROFILES_PATH, "utf8").catch(() => "[]");
-    const profiles = JSON.parse(existing);
+    
+    let profiles;
+    try {
+      profiles = JSON.parse(existing);
+    } catch (parseError) {
+      console.error("Invalid JSON in profiles file, starting fresh:", parseError);
+      profiles = [];
+    }
+    
+    // Ensure profiles is an array
+    if (!Array.isArray(profiles)) {
+      console.error("Profiles data is not an array, starting fresh:", typeof profiles);
+      profiles = [];
+    }
+    
     profiles.push(newProfile);
     await writeFile(PROFILES_PATH, JSON.stringify(profiles, null, 2));
 
@@ -188,7 +202,23 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const data = await readFile(PROFILES_PATH, "utf8").catch(() => "[]");
-    const profiles = JSON.parse(data);
+    
+    // Validate JSON before parsing
+    let profiles;
+    try {
+      profiles = JSON.parse(data);
+    } catch (parseError) {
+      console.error("Invalid JSON in profiles file:", parseError);
+      // Return empty array if JSON is corrupted
+      profiles = [];
+    }
+    
+    // Ensure profiles is an array
+    if (!Array.isArray(profiles)) {
+      console.error("Profiles data is not an array:", typeof profiles);
+      profiles = [];
+    }
+    
     return NextResponse.json(profiles);
   } catch (error) {
     console.error("Error fetching profiles:", error);

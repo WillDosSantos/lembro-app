@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ContributorManager from "@/components/ContributorManager";
+import StoryForm from "@/components/StoryForm";
+import StoryTestHelper from "@/components/StoryTestHelper";
+import ProfilePreview from "@/components/ProfilePreview";
 
 interface Params {
   slug: string;
@@ -22,6 +25,15 @@ interface LifePhoto {
   previewUrl?: string;
 }
 
+interface Story {
+  id: string;
+  content: string;
+  author: string;
+  authorEmail: string;
+  createdAt: string;
+  approved: boolean;
+}
+
 interface FormData {
   name: string;
   birth: string;
@@ -32,6 +44,7 @@ interface FormData {
   family: FamilyMember[];
   lifePhotos: LifePhoto[];
   photo: string;
+  stories?: Story[];
 }
 
 export default function EditProfile() {
@@ -40,6 +53,12 @@ export default function EditProfile() {
   const router = useRouter();
   const [deleted, setDeleted] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [isGeneratingStorybook, setIsGeneratingStorybook] = useState(false);
+  const [storybookMessage, setStorybookMessage] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [form, setForm] = useState<FormData>({
     name: "",
     birth: "",
@@ -51,6 +70,129 @@ export default function EditProfile() {
     family: [{ first: "", last: "" }],
     lifePhotos: [{ filename: "", description: "" }],
   });
+
+  const fetchStories = async () => {
+    try {
+      const response = await fetch(`/api/profiles/${slug}/stories`);
+      if (response.ok) {
+        const data = await response.json();
+        setStories(data.stories || []);
+      }
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+    }
+  };
+
+  const generateStorybook = async () => {
+    setIsGeneratingStorybook(true);
+    setStorybookMessage("");
+    
+    try {
+      const response = await fetch(`/api/profiles/${slug}/generate-storybook`, {
+        method: "POST",
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setStorybookMessage("Storybook generated successfully! It will appear on the profile page.");
+        // Refresh the page to show the new storybook
+        window.location.reload();
+      } else {
+        setStorybookMessage(data.error || "Failed to generate storybook.");
+      }
+    } catch (error) {
+      console.error("Error generating storybook:", error);
+      setStorybookMessage("Failed to generate storybook. Please try again.");
+    } finally {
+      setIsGeneratingStorybook(false);
+    }
+  };
+
+  const handleStoryApproval = async (storyId: string, approved: boolean) => {
+    try {
+      const response = await fetch(`/api/profiles/${slug}/stories`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ storyId, approved }),
+      });
+      
+      if (response.ok) {
+        // Refresh stories
+        fetchStories();
+      }
+    } catch (error) {
+      console.error("Error updating story:", error);
+    }
+  };
+
+  const handleDeleteStory = async (storyId: string) => {
+    if (!confirm("Are you sure you want to delete this story?")) return;
+    
+    try {
+      const response = await fetch(`/api/profiles/${slug}/stories`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ storyId }),
+      });
+      
+      if (response.ok) {
+        // Refresh stories
+        fetchStories();
+      }
+    } catch (error) {
+      console.error("Error deleting story:", error);
+    }
+  };
+
+  const handleDeleteAllStories = async () => {
+    setIsDeletingAll(true);
+    try {
+      // Delete all stories one by one
+      const deletePromises = stories.map(story => 
+        fetch(`/api/profiles/${slug}/stories`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ storyId: story.id }),
+        })
+      );
+
+      await Promise.all(deletePromises);
+      await fetchStories();
+      setShowDeleteAllModal(false);
+    } catch (error) {
+      console.error("Error deleting all stories:", error);
+    } finally {
+      setIsDeletingAll(false);
+    }
+  };
+
+  const buildPreviewProfile = () => {
+    return {
+      id: form.name.toLowerCase().replace(/\s+/g, '-'),
+      slug: slug,
+      name: form.name,
+      photo: form.photo,
+      birth: form.birth,
+      death: form.death,
+      eulogy: form.eulogy,
+      story: form.story,
+      cause: form.cause,
+      family: form.family.filter(member => member.first.trim() || member.last.trim()),
+      comments: [],
+      createdBy: session?.user?.email,
+      candles: 0,
+      lifePhotos: form.lifePhotos.filter(photo => photo.filename.trim()),
+      stories: stories,
+      generatedStorybook: undefined // We'll fetch this from the server if it exists
+    };
+  };
 
   useEffect(() => {
     if (!session || deleted) return;
@@ -72,10 +214,6 @@ export default function EditProfile() {
       if (!canEdit) {
         router.push(`/profiles/${slug}`);
       } else {
-        console.log("Setting form data from API:", data);
-        console.log("Birth date from API:", data.birth);
-        console.log("Death date from API:", data.death);
-        
         setForm({
           name: data.name || "",
           birth: data.birth || "",
@@ -95,13 +233,12 @@ export default function EditProfile() {
     }
   
     fetchData();
+    fetchStories();
   }, [slug, session, deleted]);
 
   const handleChange = (field: string, value: string) => {
-    console.log(`Updating field ${field} to:`, value);
     setForm((prev) => {
       const updated = { ...prev, [field]: value };
-      console.log("Form state after update:", updated);
       return updated;
     });
   };
@@ -135,13 +272,8 @@ export default function EditProfile() {
     
     // Don't submit if profile has been deleted
     if (deleted) {
-      console.log("Profile has been deleted, skipping update");
       return;
     }
-    
-    console.log("Form data being submitted:", form);
-    console.log("Birth date in form:", form.birth);
-    console.log("Death date in form:", form.death);
     
     const res = await fetch(`/api/profiles/${slug}`, {
       method: "PUT",
@@ -150,11 +282,9 @@ export default function EditProfile() {
     });
     
     if (res.ok) {
-      console.log("Update successful, redirecting...");
       // Force a hard refresh to ensure the updated data is loaded
       window.location.href = `/profiles/${slug}`;
     } else {
-      console.error("Update failed:", res.status, res.statusText);
       alert("Failed to update profile. Please try again.");
     }
   };
@@ -180,7 +310,8 @@ export default function EditProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4 mt-40">
+    <>
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4 mt-40">
       {deleted && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <p className="text-red-800 font-medium">This profile has been deleted.</p>
@@ -494,6 +625,111 @@ export default function EditProfile() {
         + Add Photo
       </button>
 
+      {/* Stories Management */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Stories & Storybook</h2>
+        
+        {/* Test Helper for Owners */}
+        {isOwner && (
+          <StoryTestHelper 
+            profileSlug={slug} 
+            profileName={form.name}
+            onStoriesAdded={fetchStories}
+          />
+        )}
+        
+        {/* Story Form */}
+        <div className="mb-6">
+          <StoryForm 
+            profileSlug={slug} 
+            profileName={form.name}
+            onStoryAdded={fetchStories}
+            isOwner={isOwner}
+          />
+        </div>
+
+        {/* Stories List */}
+        {stories.length > 0 && (
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Submitted Stories</h3>
+              {isOwner && (
+                <button
+                  onClick={() => setShowDeleteAllModal(true)}
+                  className="text-red-600 hover:text-red-800 text-sm font-medium"
+                >
+                  Delete All Stories
+                </button>
+              )}
+            </div>
+            <div className="space-y-4">
+              {stories.map((story) => (
+                <div key={story.id} className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        By {story.author} • {new Date(story.createdAt).toLocaleDateString()}
+                      </p>
+                      <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                        story.approved 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {story.approved ? 'Approved' : 'Pending Approval'}
+                      </span>
+                    </div>
+                    {isOwner && (
+                      <div className="flex space-x-2">
+                        {!story.approved && (
+                          <button
+                            onClick={() => handleStoryApproval(story.id, true)}
+                            className="text-green-600 hover:text-green-800 text-sm"
+                          >
+                            Approve
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteStory(story.id)}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-gray-800">{story.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Generate Storybook Button */}
+        {isOwner && stories.filter(s => s.approved).length >= 2 && (
+          <div className="mb-6">
+            <button
+              onClick={generateStorybook}
+              disabled={isGeneratingStorybook}
+              className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGeneratingStorybook ? "Generating..." : "Create Storybook"}
+            </button>
+            {storybookMessage && (
+              <p className={`mt-2 text-sm ${
+                storybookMessage.includes("successfully") 
+                  ? "text-green-600" 
+                  : "text-red-600"
+              }`}>
+                {storybookMessage}
+              </p>
+            )}
+            <p className="text-sm text-gray-600 mt-2">
+              Generate a beautiful digital storybook from approved stories. Requires at least 2 approved stories.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Contributor Management */}
       <div className="mt-8">
         <ContributorManager 
@@ -502,12 +738,21 @@ export default function EditProfile() {
         />
       </div>
 
-      <button
-        type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded"
-      >
-        Save Changes
-      </button>
+      <div className="flex space-x-4">
+        <button
+          type="button"
+          onClick={() => setShowPreview(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Preview Changes
+        </button>
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          Save Changes
+        </button>
+      </div>
       <button
         onClick={handleDelete}
         className="mt-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -515,5 +760,42 @@ export default function EditProfile() {
         Delete This Profile
       </button>
     </form>
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <ProfilePreview
+          profile={buildPreviewProfile()}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
+
+      {/* Delete All Stories Confirmation Modal */}
+      {showDeleteAllModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Delete All Stories</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete all {stories.length} stories? This action cannot be undone.
+            </p>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setShowDeleteAllModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                disabled={isDeletingAll}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAllStories}
+                disabled={isDeletingAll}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeletingAll ? "Deleting..." : "Delete All"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
